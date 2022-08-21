@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<script src="{% static 'canvas.js' %}"></script>
+<script src="{% static 'pico.js' %}"></script>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+
+<body>
+
+
+    <h1 class="m-2">
+        Upload two of your pictures
+    </h1>
+
+    <div>
+        <div class="file is-primary has-name is-boxed m-2">
+            <label class="file-label">
+                <input class="file-input" type="file" name="resume">
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </span>
+                    <span class="file-label">
+                        Danger file…
+                    </span>
+                </span>
+                <span class="file-name">
+                    Screen Shot 2017-07-29 at 15.54.25.png
+                </span>
+            </label>
+        </div>
+
+        <div class="file is-primary has-name is-boxed m-2">
+            <label class="file-label">
+                <input class="file-input" type="file" name="resume">
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </span>
+                    <span class="file-label">
+                        Danger file…
+                    </span>
+                </span>
+                <span class="file-name">
+                    Screen Shot 2017-07-29 at 15.54.25.png
+                </span>
+            </label>
+        </div>
+
+        <button class="button is-primary is-outlined m-5">
+            DONE
+        </button>
+    </div>
+
+
+
+</body>
+
+{% endblock %}
