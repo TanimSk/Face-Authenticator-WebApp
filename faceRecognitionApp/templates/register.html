@@ -8,7 +8,7 @@
 {% block style %}
 {% endblock %}
 
-{% block title %}Log In{% endblock title %}
+{% block title %}Register{% endblock title %}
 
 {% block content %}
 
@@ -19,47 +19,79 @@
         Upload two of your pictures
     </h1>
 
+    <div class="field m-2">
+        <p class="control has-icons-left">
+            <input class="input is-primary" type="text" placeholder="Your Name" id="username">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+        </p>
+    </div>
+
+    <div class="field m-2">
+        <p class="control has-icons-left">
+            <input class="input is-primary" type="text" placeholder="Your Email" id="email">
+            <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+            </span>
+        </p>
+    </div>
+
     <div>
         <div class="file is-primary has-name is-boxed m-2">
             <label class="file-label">
-                <input class="file-input" type="file" name="resume">
+                <input class="file-input" type="file" name="resume" id="imgs" multiple>
                 <span class="file-cta">
                     <span class="file-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </span>
                     <span class="file-label">
-                        Danger file…
+                        Upload your image
                     </span>
                 </span>
                 <span class="file-name">
-                    Screen Shot 2017-07-29 at 15.54.25.png
+                    image
                 </span>
             </label>
         </div>
 
-        <div class="file is-primary has-name is-boxed m-2">
-            <label class="file-label">
-                <input class="file-input" type="file" name="resume">
-                <span class="file-cta">
-                    <span class="file-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </span>
-                    <span class="file-label">
-                        Danger file…
-                    </span>
-                </span>
-                <span class="file-name">
-                    Screen Shot 2017-07-29 at 15.54.25.png
-                </span>
-            </label>
-        </div>
 
-        <button class="button is-primary is-outlined m-5">
+        {% csrf_token %}
+
+        <button class="button is-primary is-outlined m-5" onclick="sendData()">
             DONE
         </button>
     </div>
 
+    <script>
 
+        function sendData() {
+            const userName = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const imgs = document.getElementById('imgs');
+            const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+            let formData = new FormData();
+
+            formData.append('user', userName);
+            formData.append('email', email);
+            formData.append('csrfmiddlewaretoken', token)
+
+            for (let img of imgs.files) {
+                formData.append('images', img);
+            }
+
+            fetch(
+                "{% url 'register' %}", {
+
+                method: 'post',
+                body: formData
+            });
+
+        }
+
+
+    </script>
 
 </body>
 
