@@ -40,7 +40,7 @@
     <div>
         <div class="file is-primary has-name is-boxed m-2">
             <label class="file-label">
-                <input class="file-input" type="file" name="resume" id="imgs" multiple>
+                <input class="file-input" type="file" id="imgs" accept="image/*" multiple>
                 <span class="file-cta">
                     <span class="file-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -83,7 +83,6 @@
 
             fetch(
                 "{% url 'register' %}", {
-
                 method: 'post',
                 body: formData
             });

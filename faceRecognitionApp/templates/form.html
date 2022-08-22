@@ -17,7 +17,7 @@
         Start real-time Face Detection
     </button>
 
-    <button class="button is-primary is-outlined m-3" id="login-btn">
+    <button class="button is-primary is-outlined m-3" id="login-btn" onclick="login()" disabled>
         LOG IN
     </button>
 
@@ -34,8 +34,10 @@
     </div>
 
     <div class="cameraCanvas">
-        <canvas width=600 height=500></canvas>
+        <canvas width=650 height=450></canvas>
     </div>
+
+    {% csrf_token %}
 
     <script>
         var initialized = false;
@@ -43,6 +45,32 @@
         var faceDetectedInt = 0;
         var msgDiv = document.getElementById('msg');
         var loginBtn = document.getElementById('login-btn');
+        const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+        var stopDrawing = false;
+        var mycanvas = document.getElementsByTagName('canvas')[0];
+        var ctx = mycanvas.getContext('2d');
+        var videoBuffer = null;
+
+        function login() {
+            stopDrawing = true;
+            ctx.drawImage(videoBuffer, 0, 0);
+
+            mycanvas.toBlob(
+                function (blob) {
+                    var newForm = new FormData();
+                    newForm.append('img', blob, 'myImage.png');
+                    newForm.append('csrfmiddlewaretoken', token)
+                    fetch(
+                        "{% url 'form' %}", {
+                        method: 'post',
+                        body: newForm
+                    });
+                }
+            );
+
+            stopDrawing = false;
+        }
 
         function button_callback() {
             /*
@@ -66,7 +94,7 @@
             /*
                 (2) get the drawing context on the canvas and define a function to transform an RGBA image to grayscale
             */
-            var ctx = document.getElementsByTagName('canvas')[0].getContext('2d');
+
             function rgba_to_grayscale(rgba, nrows, ncols) {
                 var gray = new Uint8Array(nrows * ncols);
                 for (var r = 0; r < nrows; ++r)
@@ -81,6 +109,7 @@
             var processfn = function (video, dt) {
                 faceDetected = false;
                 // render the video frame to the canvas element and extract RGBA pixel data
+                videoBuffer = video;
                 ctx.drawImage(video, 0, 0);
                 var rgba = ctx.getImageData(0, 0, 640, 480).data;
                 // prepare input to `run_cascade`
@@ -108,7 +137,7 @@
                     // if it's above the threshold, draw it
                     // (the constant 50.0 is empirical: other cascades might require a different one)
 
-                    if (dets[i][3] > 45.0) {
+                    if (dets[i][3] > 45.0 && !stopDrawing) {
                         ctx.beginPath();
                         ctx.arc(dets[i][1], dets[i][0], dets[i][2] / 2, 0, 2 * Math.PI, false);
                         ctx.lineWidth = 3;
