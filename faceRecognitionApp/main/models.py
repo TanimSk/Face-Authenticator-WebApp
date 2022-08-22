@@ -5,5 +5,5 @@ class Registered_user(models.Model):
     email = models.CharField(max_length=100, default='Not Given')
 
 class User_image(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(upload_to = "images/", null=True, default=None)
     user = models.ForeignKey(Registered_user, on_delete=models.CASCADE)
