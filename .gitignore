@@ -1,2 +1,2 @@
 venv/
-faceRecognitionApp/media/images/*
+./faceRecognitionApp/media/images/*
