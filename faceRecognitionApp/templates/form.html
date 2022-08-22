@@ -30,7 +30,13 @@
     <br>
 
     <div id="msg">
+        <!-- face detected -->
+    </div>
 
+    <hr>
+
+    <div id="info">
+        <!-- user info -->
     </div>
 
     <div class="cameraCanvas">
@@ -44,6 +50,7 @@
         var faceDetected = false;
         var faceDetectedInt = 0;
         var msgDiv = document.getElementById('msg');
+        var userInfo = document.getElementById('info');
         var loginBtn = document.getElementById('login-btn');
         const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
@@ -64,6 +71,7 @@
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
+                    userInfo.innerHTML = "Please Wait...";
                     fetch(
                         "{% url 'form' %}", {
                         method: 'post',
@@ -72,7 +80,8 @@
                         response => response.json()
                     ).then(
                         (data) => {
-                            msgDiv.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
+                            console.log(data);
+                            userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
                         }
                     );
                 }

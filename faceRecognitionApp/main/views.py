@@ -27,14 +27,11 @@ def form(req):
                     }
                 ))
 
-            else:
-                return HttpResponse(json.dumps(
-                    {
-                        'stat': False
-                    }
-                ))
-
-        return HttpResponse(False)
+        return HttpResponse(json.dumps(
+            {
+                'stat': False
+            }
+        ))
 
     return render(req, 'form.html')
 

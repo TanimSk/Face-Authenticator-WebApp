@@ -19,4 +19,6 @@ def compare(face1, face2):
 
     results = face_recognition.compare_faces([known_encoding], unknown_encoding)
 
+    print(results[0])
+
     return results[0]
