@@ -72,7 +72,7 @@
                         response => response.json()
                     ).then(
                         (data) => {
-                            console.log(data);
+                            msgDiv.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
                         }
                     );
                 }
@@ -146,7 +146,7 @@
                     // if it's above the threshold, draw it
                     // (the constant 50.0 is empirical: other cascades might require a different one)
 
-                    if (dets[i][3] > 45.0 && !stopDrawing) {
+                    if (dets[i][3] > 50.0 && !stopDrawing) {
                         ctx.beginPath();
                         ctx.arc(dets[i][1], dets[i][0], dets[i][2] / 2, 0, 2 * Math.PI, false);
                         ctx.lineWidth = 3;
