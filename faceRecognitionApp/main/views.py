@@ -2,6 +2,8 @@ from django.shortcuts import render, HttpResponse
 from .models import RegisteredUser, UserImage
 from PIL import Image
 from . import face_recognize
+import json
+
 
 def form(req):
     if req.method == 'POST':
@@ -16,14 +18,23 @@ def form(req):
 
             # Comparing images
             if face_recognize.compare(target_img, new_ref_img):
-                print('Face Matched')
-                return HttpResponse(True)
+                # print(ref_img.user)
+                return HttpResponse(json.dumps(
+                    {
+                        'stat': True,
+                        'name': ref_img.user.name,
+                        'email': ref_img.user.email
+                    }
+                ))
+
             else:
-                print('Face Unmatched')
-                return HttpResponse(False)
+                return HttpResponse(json.dumps(
+                    {
+                        'stat': False
+                    }
+                ))
 
         return HttpResponse(False)
-
 
     return render(req, 'form.html')
 
@@ -33,13 +44,13 @@ def register(req):
         name = req.POST.get('user')
         email = req.POST.get('email')
         imgs = req.FILES.getlist('images')
-        
+
         user_instance = RegisteredUser(name=name, email=email)
         user_instance.save()
 
         for img in imgs:
             UserImage(image=img, user=user_instance).save()
-        
+
         return HttpResponse(False)
 
     return render(req, 'register.html')

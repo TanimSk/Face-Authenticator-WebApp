@@ -17,7 +17,7 @@
         Start real-time Face Detection
     </button>
 
-    <button class="button is-primary is-outlined m-3" id="login-btn" onclick="login()" disabled>
+    <button class="button is-primary is-outlined m-3" id="login-btn" onclick="login()">
         LOG IN
     </button>
 
@@ -52,20 +52,29 @@
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
 
+        loginBtn.disabled = true;
+
         function login() {
             stopDrawing = true;
             ctx.drawImage(videoBuffer, 0, 0);
+            loginBtn.disabled = true;
 
             mycanvas.toBlob(
                 function (blob) {
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
-                    newForm.append('csrfmiddlewaretoken', token)
+                    newForm.append('csrfmiddlewaretoken', token);
                     fetch(
                         "{% url 'form' %}", {
                         method: 'post',
                         body: newForm
-                    });
+                    }).then(
+                        response => response.json()
+                    ).then(
+                        (data) => {
+                            console.log(data);
+                        }
+                    );
                 }
             );
 
