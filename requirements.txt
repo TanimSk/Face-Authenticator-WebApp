@@ -1,3 +1,4 @@
+cmake
 asgiref==3.5.2
 click==8.1.3
 Django==4.1
@@ -8,3 +9,5 @@ numpy==1.23.2
 Pillow==9.2.0
 sqlparse==0.4.2
 whitenoise==6.2.0
+gunicorn==20.1.0
+psycopg2

@@ -26,13 +26,13 @@ SECRET_KEY = 'django-insecure-c_=k0yc12c-*!m)x2=$lbq8cbz%8pxpks*k!n2p$xo_1s_bclt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['face-authenticator.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic', 
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'faceRecognitionApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd9fmnblnme4oqq',
+        'USER': 'ttccnwxqgjbejy',
+        'PASSWORD': 'cc27ff36fd4571ed72a6823de97b5f7aed19399f7600e33014d6605591a80154',
+        'HOST': 'ec2-44-207-126-176.compute-1.amazonaws.com',
+        'PORT': '5432'
     }
 }
 
@@ -116,8 +120,8 @@ USE_I18N = True
 USE_TZ = True
 
 # MEDIA FILES
-MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
-MEDIA_URL= "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = "/media/"
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
