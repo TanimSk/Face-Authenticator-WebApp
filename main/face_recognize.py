@@ -2,7 +2,6 @@ import face_recognition
 import numpy as np
 
 # import urllib.request
-
 # url1 = 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Hilary_Duff_Vogue_2019_2.png'
 # url2 = 'https://api.time.com/wp-content/uploads/2015/03/hillary-duff.jpg'
 # url3 = 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Helene_Fischer_2016.jpg'
