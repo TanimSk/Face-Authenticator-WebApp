@@ -6,4 +6,4 @@ class RegisteredUser(models.Model):
 
 class UserImage(models.Model):
     image = models.ImageField(upload_to = "images/", null=True, default=None)
-    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='user_images')

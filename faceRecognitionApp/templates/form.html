@@ -13,6 +13,15 @@
 {% block content %}
 
 <body>
+    <div class="field m-2">
+        <p class="control has-icons-left">
+            <input class="input is-primary" type="text" placeholder="Your Email" id="email">
+            <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+            </span>
+        </p>
+    </div>
+
     <button class="button is-primary is-outlined m-3" onclick="button_callback()">
         Start real-time Face Detection
     </button>
@@ -49,6 +58,7 @@
         var initialized = false;
         var faceDetected = false;
         var faceDetectedInt = 0;
+        var email = document.getElementById('email');
         var msgDiv = document.getElementById('msg');
         var userInfo = document.getElementById('info');
         var loginBtn = document.getElementById('login-btn');
@@ -71,6 +81,7 @@
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
+                    newForm.append('email', email.value);
                     userInfo.innerHTML = "Please Wait...";
                     fetch(
                         "{% url 'form' %}", {
@@ -80,8 +91,8 @@
                         response => response.json()
                     ).then(
                         (data) => {
-                            console.log(data);
-                            userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
+                            if(data.stat) userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
+                            else userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
                         }
                     );
                 }

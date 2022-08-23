@@ -7,12 +7,17 @@ import json
 
 def form(req):
     if req.method == 'POST':
+
+        email = req.POST.get('email')
+        user = RegisteredUser.objects.get(email=email)
+
         # Target image
-        img = req.FILES.get('img')
-        target_img = Image.open(img)
+        target_img = Image.open(
+            req.FILES.get('img')
+        )
 
         # Reference image
-        ref_imgs = UserImage.objects.all()
+        ref_imgs = user.user_images.all()
         for ref_img in ref_imgs:
             new_ref_img = Image.open(ref_img.image)
 
@@ -48,6 +53,10 @@ def register(req):
         for img in imgs:
             UserImage(image=img, user=user_instance).save()
 
-        return HttpResponse(False)
+        return HttpResponse(json.dumps(
+            {
+                'stat': True
+            }
+        ))
 
     return render(req, 'register.html')

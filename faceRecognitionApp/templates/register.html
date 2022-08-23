@@ -63,7 +63,14 @@
         </button>
     </div>
 
+    <div class="notification is-success is-light mt-5" id="notification_">
+        Account Registered !
+    </div>
+
     <script>
+
+        let _notification = document.getElementById('notification_');
+        _notification.style.visibility = 'hidden';
 
         function sendData() {
             const userName = document.getElementById('username').value;
@@ -85,7 +92,13 @@
                 "{% url 'register' %}", {
                 method: 'post',
                 body: formData
-            });
+            }).then(response => response.json()).then(
+                (data) => {
+                    if (data.stat) {
+                        _notification.style.visibility = 'visible';
+                    }
+                }
+            );
 
         }
 
