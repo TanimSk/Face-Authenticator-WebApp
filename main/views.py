@@ -9,7 +9,14 @@ def form(req):
     if req.method == 'POST':
 
         email = req.POST.get('email')
-        user = RegisteredUser.objects.get(email=email)
+        user = RegisteredUser.objects.filter(email=email).first()
+
+        if user is None:
+            return HttpResponse(json.dumps(
+            {
+                'stat': 'not_user'
+            }
+        ))
 
         # Target image
         target_img = Image.open(
@@ -26,7 +33,7 @@ def form(req):
                 # print(ref_img.user)
                 return HttpResponse(json.dumps(
                     {
-                        'stat': True,
+                        'stat': 'is_user',
                         'name': ref_img.user.name,
                         'email': ref_img.user.email
                     }
@@ -34,7 +41,7 @@ def form(req):
 
         return HttpResponse(json.dumps(
             {
-                'stat': False
+                'stat': 'face_unmatched'
             }
         ))
 

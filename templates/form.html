@@ -91,8 +91,9 @@
                         response => response.json()
                     ).then(
                         (data) => {
-                            if(data.stat) userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
-                            else userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
+                            if(data.stat == 'is_user') userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
+                            else if(data.stat === 'face_unmatched') userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
+                            else if(data.stat === 'not_user') userInfo.innerHTML = `<b>Couldn't find your email in our DB</b>`;
                         }
                     );
                 }
