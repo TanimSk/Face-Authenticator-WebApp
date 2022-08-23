@@ -14,9 +14,12 @@ def compare(face1, face2):
     known_image = np.array(face1.convert('RGB'))
     unknown_image = np.array(face2.convert('RGB'))
 
-    try:
-        known_encoding = face_recognition.face_encodings(known_image)[0]
-        unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+    known_encoding = face_recognition.face_encodings(known_image)
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+
+    if len(known_encoding) != 0 and len(unknown_encoding) != 0:
+        known_encoding = known_encoding[0]
+        unknown_encoding = unknown_encoding[0]
 
         results = face_recognition.compare_faces([known_encoding], unknown_encoding)
 
@@ -24,6 +27,5 @@ def compare(face1, face2):
 
         return results[0]
     
-    except IndexError:
-        
+    else:
         return False
