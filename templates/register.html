@@ -16,7 +16,7 @@
 
 
     <h1 class="m-2">
-        Upload two of your pictures
+        Upload Pictures
     </h1>
 
     <div class="field m-2">
@@ -40,7 +40,7 @@
     <div>
         <div class="file is-primary has-name is-boxed m-2">
             <label class="file-label">
-                <input class="file-input" type="file" id="imgs" accept="image/*" multiple>
+                <input class="file-input" type="file" id="imgs" accept="image/*" multiple oninput="file_uploaded()">
                 <span class="file-cta">
                     <span class="file-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -49,8 +49,8 @@
                         Upload your image
                     </span>
                 </span>
-                <span class="file-name">
-                    image
+                <span class="file-name" id="fileLabel">
+                    No files uploaded
                 </span>
             </label>
         </div>
@@ -58,35 +58,47 @@
 
         {% csrf_token %}
 
-        <button class="button is-primary is-outlined m-5" onclick="sendData()">
+        <button class="button is-primary is-outlined m-5" onclick="sendData(this)">
             DONE
         </button>
     </div>
 
     <div class="notification is-success is-light mt-5" id="notification_">
-        Account Registered !
+
     </div>
 
     <script>
-
+        const imgs = document.getElementById('imgs');
         let _notification = document.getElementById('notification_');
+        let fileLabel = document.getElementById('fileLabel');
         _notification.style.visibility = 'hidden';
 
-        function sendData() {
+        function file_uploaded(){
+            fileLabel.innerHTML = `<b>${imgs.files.length}</b> file(s) uploaded`;
+        }
+
+        function sendData(btn) {
             const userName = document.getElementById('username').value;
             const email = document.getElementById('email').value;
-            const imgs = document.getElementById('imgs');
+            
             const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
-            let formData = new FormData();
+            if (userName.length == 0 || email.length == 0 || imgs.files.length == 0) {
+                _notification.innerHTML = "Please fill up this form properly";
+                _notification.style.visibility = 'visible';
+                return false;
+            }
 
+            let formData = new FormData();
             formData.append('user', userName);
             formData.append('email', email);
-            formData.append('csrfmiddlewaretoken', token)
+            formData.append('csrfmiddlewaretoken', token);
 
             for (let img of imgs.files) {
                 formData.append('images', img);
             }
+
+            btn.disabled = true;
 
             fetch(
                 "{% url 'register' %}", {
@@ -95,7 +107,9 @@
             }).then(response => response.json()).then(
                 (data) => {
                     if (data.stat) {
+                        _notification.innerHTML = "Account Registered !";
                         _notification.style.visibility = 'visible';
+                        btn.disabled = false;
                     }
                 }
             );
