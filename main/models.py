@@ -11,4 +11,6 @@ class UserImage(models.Model):
 class Log(models.Model):
     name = models.CharField(max_length=60, default='Not Given')
     time_in = models.DateTimeField(auto_now_add=True)
-    time_out = models.CharField(max_length=60, default=' - ')
+    time_out = models.DateTimeField(null=True, blank=True)
+    total_hours = models.CharField(max_length=100, default='-')
+    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='user_logs')

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+
+
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+
+<body>
+    <div class="has-text-centered">
+        <form action="{% url 'signout' %}" method="post">
+            <button class="button is-primary is-outlined m-5 " type="submit">
+                Sign Out
+            </button>
+
+            {% csrf_token %}
+        </form>
+    </div>
+</body>
+
+{% endblock %}

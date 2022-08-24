@@ -7,5 +7,6 @@ from main import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.form, name='form'),
+    path('signout/', views.sign_out, name='signout'),
     path('register/', views.register, name='register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,10 +2,13 @@ from django.shortcuts import render, HttpResponse
 from .models import RegisteredUser, UserImage, Log
 from PIL import Image
 from . import face_recognize
+from datetime import datetime
+from pytz import timezone
 import json
 
 
 def form(req):
+
     if req.method == 'POST':
 
         email = req.POST.get('email')
@@ -18,7 +21,11 @@ def form(req):
             }
         ))
 
-        Log(name=user.name).save()
+        # Save into Session
+        req.session['is_signed_in'] = 'Y'
+        req.session['user_email'] = email
+
+        Log(name=user.name, user=user).save()
 
         # Target image
         target_img = Image.open(
@@ -48,6 +55,22 @@ def form(req):
         ))
 
     return render(req, 'form.html')
+
+
+
+def sign_out(req):
+    if req.method == 'POST':
+        req.session['is_signed_in'] = 'N'
+        email = req.session.get('user_email', '')
+        user = RegisteredUser.objects.filter(email=email).first()
+        delta_time = user.user_logs.time_out - user.user_logs.time_in
+        delta_time = round((delta_time.total_seconds() / 3600), 3)
+        user.user_logs.update(time_out=datetime.now(timezone('Asia/Dhaka')), total_hours=delta_time)
+
+        return render(req, 'form.html')
+    
+    return render(req, 'signout.html')
+
 
 
 def register(req):
