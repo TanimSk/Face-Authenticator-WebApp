@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from .models import RegisteredUser, UserImage
+from .models import RegisteredUser, UserImage, Log
 from PIL import Image
 from . import face_recognize
 import json
@@ -17,6 +17,8 @@ def form(req):
                 'stat': 'not_user'
             }
         ))
+
+        Log(name=user.name).save()
 
         # Target image
         target_img = Image.open(

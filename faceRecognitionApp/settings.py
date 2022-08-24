@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://7c66-103-159-128-81.in.ngrok.io']
 
 # Application definition
 
@@ -79,14 +80,21 @@ WSGI_APPLICATION = 'faceRecognitionApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd9fmnblnme4oqq',
-        'USER': 'ttccnwxqgjbejy',
-        'PASSWORD': 'cc27ff36fd4571ed72a6823de97b5f7aed19399f7600e33014d6605591a80154',
-        'HOST': 'ec2-44-207-126-176.compute-1.amazonaws.com',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'd9fmnblnme4oqq',
+#         'USER': 'ttccnwxqgjbejy',
+#         'PASSWORD': 'cc27ff36fd4571ed72a6823de97b5f7aed19399f7600e33014d6605591a80154',
+#         'HOST': 'ec2-44-207-126-176.compute-1.amazonaws.com',
+#         'PORT': '5432'
+#     }
+# }
 
 
 # Password validation
@@ -113,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
