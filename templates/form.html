@@ -88,16 +88,22 @@
                     fetch(
                         "{% url 'form' %}", {
                         method: 'post',
+                        redirect: 'follow',
                         body: newForm
                     }).then(
                         response => response.json()
                     ).then(
                         (data) => {
                             loginBtn.disabled = false;
-                            if(data.stat == 'is_user') userInfo.innerHTML = `<b>Your Name: ${data.name}</b> <br><b>Your Email:</b> ${data.email}`;
-                            else if(data.stat === 'face_unmatched') userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
-                            else if(data.stat === 'not_user') userInfo.innerHTML = `<b>Couldn't find your email in our DB</b>`;
+                            if (data.stat == 'is_user') {
+                                document.open();
+                                document.write(data.content);
+                                document.close();
+                            }
+                            else if (data.stat === 'face_unmatched') userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
+                            else if (data.stat === 'not_user') userInfo.innerHTML = `<b>Couldn't find your email in our DB</b>`;
                             stopDrawing = false;
+                            console.log(data.content);
                         }
                     );
                 }

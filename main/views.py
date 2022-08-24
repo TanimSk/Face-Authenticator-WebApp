@@ -1,4 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, HttpResponse, redirect
+from django.template.loader import render_to_string
 from .models import RegisteredUser, UserImage, Log
 from PIL import Image
 from . import face_recognize
@@ -16,16 +18,10 @@ def form(req):
 
         if user is None:
             return HttpResponse(json.dumps(
-            {
-                'stat': 'not_user'
-            }
-        ))
-
-        # Save into Session
-        req.session['is_signed_in'] = 'Y'
-        req.session['user_email'] = email
-
-        Log(name=user.name, user=user).save()
+                {
+                    'stat': 'not_user'
+                }
+            ))
 
         # Target image
         target_img = Image.open(
@@ -39,38 +35,60 @@ def form(req):
 
             # Comparing images
             if face_recognize.compare(target_img, new_ref_img):
-                # print(ref_img.user)
+                user_log = Log(name=user.name, user=user)
+                user_log.save()
+                # Save into Session
+                req.session['is_signed_in'] = 'Y'
+                req.session['user_id'] = user_log.id
+                req.session['user_name'] = ref_img.user.name
+                req.session['user_email'] = ref_img.user.email
+
                 return HttpResponse(json.dumps(
                     {
                         'stat': 'is_user',
-                        'name': ref_img.user.name,
-                        'email': ref_img.user.email
+                        'content': render_to_string('signout.html', {
+                            'name': ref_img.user.name,
+                            'email': ref_img.user.email
+                        }, request=req)
                     }
                 ))
 
+        # Couldn't match image
         return HttpResponse(json.dumps(
             {
                 'stat': 'face_unmatched'
             }
         ))
 
-    return render(req, 'form.html')
-
+    if req.session.get('is_signed_in', None) == 'Y':
+        return render(req, 'signout.html', {
+            'name': req.session.get('user_name', 'Somethings Wrong'),
+            'email': req.session.get('user_email', 'Somethings Wrong')
+        })
+    
+    else:
+        return render(req, 'form.html')
 
 
 def sign_out(req):
     if req.method == 'POST':
+
         req.session['is_signed_in'] = 'N'
-        email = req.session.get('user_email', '')
-        user = RegisteredUser.objects.filter(email=email).first()
-        delta_time = user.user_logs.time_out - user.user_logs.time_in
+        user_id = req.session.get('user_id', '')
+
+        signout_time = datetime.now(timezone('Asia/Dhaka'))
+        user_log = Log.objects.get(id=user_id)
+        delta_time = signout_time - user_log.time_in
         delta_time = round((delta_time.total_seconds() / 3600), 3)
-        user.user_logs.update(time_out=datetime.now(timezone('Asia/Dhaka')), total_hours=delta_time)
 
-        return render(req, 'form.html')
-    
-    return render(req, 'signout.html')
+        # Storing user log to DB
+        user_log.time_out = signout_time
+        user_log.total_hours = delta_time
+        user_log.save()
 
+        return redirect('/')
+
+    return HttpResponse('Invalid Request')
 
 
 def register(req):
@@ -92,3 +110,9 @@ def register(req):
         ))
 
     return render(req, 'register.html')
+
+
+@login_required
+def dashboard(req):
+    user_logs = Log.objects.all()
+    return render(req, 'dashboard.html', {'logs': user_logs})
