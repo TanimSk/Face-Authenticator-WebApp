@@ -1,44 +1,39 @@
-{% extends "base.html" %}
-{% load static %}
-{% block head %}
-
-{% endblock %}
-
-{% block style %}
-
-{% endblock %}
-
-{% block title %}Dashboard{% endblock title %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block head %} {% endblock %} {% block style %} .redDiv{ background-color: #fcc; } .yellowDiv{ background-color: #fbfbb1; } {% endblock %} {% block title %}Dashboard{% endblock title %} {% block content %}
 
 
-<div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>SL.</th>
-                <th>Employee Name</th>
-                <th>Time In</th>
-                <th>Time Out</th>
-                <th>Total Hours</th>
-                <th>Signature</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in logs %}
-            <tr>
-                <th>{{ forloop.counter }}</th>
-                <td>{{ log.name }}</td>
-                <td>{{ log.time_in }}</td>
-                <td>{{ log.time_out }}</td>
-                <td>{{ log.total_hours }}</td>
-                <td> </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="columns is-mobile is-centered mt-5">
+    <div class="column is-half">
+        <div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>SL.</th>
+                        <th>Employee Name</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Total Hours</th>
+                        <th>Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <th>{{ forloop.counter }}</th>
+                        <td>{{ log.name }}</td>
+                        <td {% if log.late_join %} class="redDiv" {% endif %}>{{ log.time_in }}</td>
+                        <td {% if not log.late_leave %} class="yellowDiv" {% endif %}>{{ log.time_out }}</td>
+                        <td>{{ log.total_hours }}</td>
+                        <td> </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+
+
 
 
 

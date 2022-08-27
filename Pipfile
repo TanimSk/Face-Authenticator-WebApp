@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+cmake = "*"
+asgiref = "==3.5.2"
+click = "==8.1.3"
+django = "==4.1"
+dlib = "==19.24.0"
+face-recognition = "==1.3.0"
+face-recognition-models = "==0.3.0"
+numpy = "==1.23.2"
+pillow = "==9.2.0"
+sqlparse = "==0.4.2"
+whitenoise = "==6.2.0"
+gunicorn = "==20.1.0"
+pytz = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
