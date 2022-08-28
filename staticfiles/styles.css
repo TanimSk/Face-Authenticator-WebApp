@@ -1,0 +1,17 @@
+.fieldCont{
+    max-width: 35rem;
+    margin: auto;
+}
+
+.cameraCanvas{
+    width: 640px;
+    height: 450px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+#msg, #info{
+    font-weight: bold;
+    text-transform: uppercase;
+}

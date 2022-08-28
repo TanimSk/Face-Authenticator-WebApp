@@ -3,9 +3,17 @@
 {% block head %}
 <script src="{% static 'canvas.js' %}"></script>
 <script src="{% static 'pico.js' %}"></script>
+<link rel="stylesheet" href="{% static 'styles.css' %}">
 {% endblock %}
 
 {% block style %}
+.fileUpload{
+    width: 14rem;
+    margin: 1rem auto 1rem auto;
+}
+.mtop{
+    margin-top: 10vh;
+}
 {% endblock %}
 
 {% block title %}Register{% endblock title %}
@@ -14,31 +22,34 @@
 
 <body>
 
+    <div class="fieldCont mtop">
+        <div class="field mt-1 mb-2 mx-4">
+            <p class="control has-icons-left">
+                <input class="input is-primary" type="text" placeholder="Your Name" id="username">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </p>
+        </div>
 
-    <h1 class="m-2">
-        Upload Pictures
-    </h1>
-
-    <div class="field m-2">
-        <p class="control has-icons-left">
-            <input class="input is-primary" type="text" placeholder="Your Name" id="username">
-            <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-            </span>
-        </p>
+        <div class="field mt-1 mb-2 mx-4">
+            <p class="control has-icons-left">
+                <input class="input is-primary" type="text" placeholder="Your Email" id="email">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                </span>
+            </p>
+        </div>
     </div>
+    
+    
 
-    <div class="field m-2">
-        <p class="control has-icons-left">
-            <input class="input is-primary" type="text" placeholder="Your Email" id="email">
-            <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-            </span>
-        </p>
-    </div>
+    <div class="has-text-centered">
+        <span class="m-2 is-size-4">
+            Upload Pictures
+        </span>
 
-    <div>
-        <div class="file is-primary has-name is-boxed m-2">
+        <div class="file is-primary has-name is-boxed fileUpload">
             <label class="file-label">
                 <input class="file-input" type="file" id="imgs" accept="image/*" multiple oninput="file_uploaded()">
                 <span class="file-cta">
@@ -50,7 +61,7 @@
                     </span>
                 </span>
                 <span class="file-name" id="fileLabel">
-                    No files uploaded
+                    No files selected
                 </span>
             </label>
         </div>
@@ -58,7 +69,7 @@
 
         {% csrf_token %}
 
-        <button class="button is-primary is-outlined m-5" onclick="sendData(this)">
+        <button class="button is-primary is-outlined m-3" onclick="sendData(this)">
             DONE
         </button>
     </div>
@@ -74,7 +85,7 @@
         _notification.style.visibility = 'hidden';
 
         function file_uploaded(){
-            fileLabel.innerHTML = `<b>${imgs.files.length}</b> file(s) uploaded`;
+            fileLabel.innerHTML = `<b>${imgs.files.length}</b> file(s) selected`;
         }
 
         function sendData(btn) {

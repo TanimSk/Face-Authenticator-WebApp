@@ -6,7 +6,8 @@ from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.form, name='form'),
+    path('', views.home, name='home'),
+    path('signin/', views.sign_in, name='signin'),
     path('signout/', views.sign_out, name='signout'),
     path('register/', views.register, name='register'),
     path('dashboard/', views.dashboard, name='dashboard'),
