@@ -1,10 +1,17 @@
 {% extends "base.html" %} {% load static %} 
 {% block head %}
-<link rel="stylesheet" href="{% static 'styles.css' %}">
 {% endblock %} 
-{% block style %} .redDiv{ background-color: #fcc; } .yellowDiv{ background-color: #fbfbb1; } {% endblock %} {% block title %}Dashboard{% endblock title %} {% block content %}
+{% block style %} 
+.redDiv{ background-color: #fcc; } 
+.yellowDiv{ background-color: #fbfbb1; } 
+.fieldCont{
+    max-width: 55rem;
+    margin: 4rem auto auto auto;
+}
+{% endblock %} 
+{% block title %}Dashboard{% endblock title %} {% block content %}
 
-<div class="fieldCont mt-5">
+<div class="fieldCont">
     <div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <table class="table">
             <thead>
