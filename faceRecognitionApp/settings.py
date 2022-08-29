@@ -28,7 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://139.162.43.35']
+CSRF_TRUSTED_ORIGINS = ['https://onurup.xyz/']
+
 
 # Application definition
 
