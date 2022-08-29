@@ -1,7 +1,4 @@
-from turtle import delay
 from django.db import models
-from datetime import datetime
-from pytz import timezone
 
 class RegisteredUser(models.Model):
     name = models.CharField(max_length=50, default='Not Given')
