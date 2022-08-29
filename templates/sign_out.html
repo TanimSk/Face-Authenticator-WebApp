@@ -57,10 +57,27 @@
         var mycanvas = document.getElementsByTagName('canvas')[0];
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
+        var positionURL = '';
         formCont.style.display = 'none';
         // var btn_enabled = true;
 
         loginBtn.disabled = true;
+
+        //Geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position)=>{
+                    positionURL = `https://www.google.com/maps/@${position.coords.latitude},${position.coords.longitude},14z`;
+                },
+                (error) => {
+                    alert('Please allow location!');
+                },
+                {enableHighAccuracy: true}
+            );
+        }
+        else{
+            alert('Please allow location!');
+        }
 
         function login() {
             stopDrawing = true;
@@ -68,12 +85,13 @@
             loginBtn.disabled = true;
             userInfo.innerHTML = "Please Wait...";
             msgDiv.style.visibility = 'hidden';
-
+            
             mycanvas.toBlob(
                 function(blob) {
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
+                    newForm.append('position', positionURL);
                     
                     fetch(
                         "{% url 'signout' %}", {

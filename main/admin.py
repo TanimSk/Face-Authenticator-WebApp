@@ -9,7 +9,11 @@ class UserImageAdmin(admin.ModelAdmin):
     list_display = ('user', "image", )
 
 class LogAdmin(admin.ModelAdmin):
-    list_display = ('name', 'time_in', 'late_join', 'time_out', 'late_leave' ,'total_hours', 'user',)
+    list_display = \
+    ('name',
+    'time_in', 'late_join', 'location_in', 'delay_in',
+    'time_out', 'late_leave', 'location_out', 'delay_out',
+    'total_hours', 'user',)
 
 class TimingAdmin(admin.ModelAdmin):
     list_display = ('name', 'time_in', 'time_out',)

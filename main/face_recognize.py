@@ -13,14 +13,14 @@ def compare(face1, face2):
     known_image = np.array(face1.convert('RGB'))
     unknown_image = np.array(face2.convert('RGB'))
 
-    known_encoding = face_recognition.face_encodings(known_image)
-    unknown_encoding = face_recognition.face_encodings(unknown_image)
+    known_encoding = face_recognition.face_encodings(known_image, num_jitters=2)
+    unknown_encoding = face_recognition.face_encodings(unknown_image, num_jitters=2)
 
     if len(known_encoding) != 0 and len(unknown_encoding) != 0:
         known_encoding = known_encoding[0]
         unknown_encoding = unknown_encoding[0]
 
-        results = face_recognition.compare_faces([known_encoding], unknown_encoding)
+        results = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.5)
 
         print(results[0])
 
