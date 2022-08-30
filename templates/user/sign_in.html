@@ -128,7 +128,6 @@
                     fetch(
                         "{% url 'signin' %}", {
                             method: 'post',
-                            redirect: 'follow',
                             body: newForm
                         }).then(
                         response => response.json()

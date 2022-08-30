@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
 from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 from PIL import Image
@@ -98,7 +99,7 @@ def sign_out(req):
     elif is_signed_in == 'N':
         return redirect('/')
 
-    return render(req, 'sign_out.html')
+    return render(req, 'user/sign_out.html')
 
 
 
@@ -167,7 +168,7 @@ def sign_in(req):
         return redirect('/')
     
     else:
-        return render(req, 'sign_in.html', {
+        return render(req, 'user/sign_in.html', {
             'email': saved_email
         })
 
@@ -191,11 +192,25 @@ def register(req):
             }
         ))
 
-    return render(req, 'register.html')
+    return render(req, 'user/register.html')
 
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='login')
 def dashboard(req):
     user_logs = Log.objects.all().order_by('-id')
     return render(req, 'dashboard.html', {'logs': user_logs})
+
+
+def auth_login(req):
+    if req.method == 'POST':
+        handle = req.POST['handle']
+        password = req.POST['password']
+        user = authenticate(req, username=handle, password=password)
+        if user is not None:
+            login(req, user)
+            return HttpResponse(json.dumps({'is_user': True}), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'is_user': False}), content_type='application/json')
+    else:
+        return render(req, "login.html")
