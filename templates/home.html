@@ -18,25 +18,35 @@
 <div class="columns is-mobile is-multiline is-centered marginTop">
     
     <div class="column is-narrow">
-        <button class="button is-primary is-outlined m-3" 
+        <button class="button is-dark m-3"
         {% if signed_in %} disabled {% endif %}
-        onclick="window.location.href = {% url 'signin' %}">
-            SIGN IN
+        onclick="window.location.href = {% url 'signin' %}"
+        >
+            <span class="icon">
+                <i class="fas fa-toggle-on"></i>
+            </span>
+            <span>SIGN IN</span>
         </button>
     </div>
 
     <div class="column is-narrow">
-        <button class="button is-primary is-outlined m-3" 
+
+        <button class="button is-dark m-3"
         {% if not signed_in %} disabled {% endif %}
-        onclick="window.location.href = {% url 'signout' %}">
-            SIGN OUT
+        onclick="window.location.href = {% url 'signout' %}"
+        >
+            <span class="icon">
+                <i class="fas fa-toggle-off"></i>
+            </span>
+            <span>SIGN OUT</span>
         </button>
+
     </div>
 </div>
 
 <div class="regBtn">
     <a href="{% url 'register' %}">
-        <button class="button is-link is-outlined m-3">
+        <button class="button is-dark is-outlined m-3">
             REGISTRATION
         </button>
     </a>

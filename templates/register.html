@@ -25,7 +25,7 @@
     <div class="fieldCont mtop">
         <div class="field mt-1 mb-2 mx-4">
             <p class="control has-icons-left">
-                <input class="input is-primary" type="text" placeholder="Your Name" id="username">
+                <input class="input is-dark" type="text" placeholder="Your Name" id="username">
                 <span class="icon is-small is-left">
                     <i class="fas fa-user"></i>
                 </span>
@@ -34,7 +34,7 @@
 
         <div class="field mt-1 mb-2 mx-4">
             <p class="control has-icons-left">
-                <input class="input is-primary" type="text" placeholder="Your Email" id="email">
+                <input class="input is-dark" type="text" placeholder="Your Email" id="email">
                 <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                 </span>
@@ -49,7 +49,7 @@
             Upload Pictures
         </span>
 
-        <div class="file is-primary has-name is-boxed fileUpload">
+        <div class="file is-dark has-name is-boxed fileUpload">
             <label class="file-label">
                 <input class="file-input" type="file" id="imgs" accept="image/*" multiple oninput="file_uploaded()">
                 <span class="file-cta">
@@ -69,14 +69,22 @@
 
         {% csrf_token %}
 
-        <button class="button is-primary is-outlined m-3" onclick="sendData(this)">
-            DONE
+        <button class="button is-dark is-outlined m-3" onclick="sendData(this)">
+            <span>
+                <b>DONE</b>
+            </span>
+            <span class="icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </span>
         </button>
-    </div>
-
-    <div class="notification is-success is-light mt-5" id="notification_">
 
     </div>
+
+    <div class="has-text-centered fieldCont">
+        <div class="notification is-success is-light mt-5" id="notification_">
+        </div>
+    </div>
+    
 
     <script>
         const imgs = document.getElementById('imgs');

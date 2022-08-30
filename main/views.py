@@ -103,10 +103,12 @@ def sign_out(req):
 
 
 def sign_in(req):
+    saved_email = req.session.get('user_email', "")
+
     if req.method == 'POST':
 
-        email = req.POST.get('email')
         position = req.POST.get('position')
+        email = req.POST.get('email')
 
         user = RegisteredUser.objects.filter(email=email).first()
 
@@ -165,7 +167,9 @@ def sign_in(req):
         return redirect('/')
     
     else:
-        return render(req, 'sign_in.html')
+        return render(req, 'sign_in.html', {
+            'email': saved_email
+        })
 
 
 

@@ -10,8 +10,11 @@
 <body>
 
     <div class="has-text-centered mt-4">
-        <button class="button is-primary is-outlined m-4" onclick="button_callback()">
-            Start Face Detection
+        <button class="button is-dark m-3" onclick="button_callback()">
+            <span class="icon">
+                <i class="fas fa-smile"></i>
+            </span>
+            <span>Start Face Detection</span>
         </button>
     </div>
 
@@ -30,12 +33,13 @@
             <!-- user info -->
         </div>
     
-        <div class="fieldCont">
-            <div class="has-text-centered">
-                <button class="button is-primary is-outlined m-3" id="login-btn" onclick="login()">
-                    SIGN OUT
-                </button>
-            </div>
+        <div class="has-text-centered">
+            <button class="button is-dark m-3" onclick="logout()" id="login-btn">
+                <span class="icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </span>
+                <span>SIGN OUT</span>
+            </button>
         </div>
 
     </div>
@@ -53,11 +57,11 @@
         var formCont = document.getElementById('form-container');
         const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
-        var stopDrawing = false;
+        var stopDrawing = true;
         var mycanvas = document.getElementsByTagName('canvas')[0];
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
-        var positionURL = '';
+        var positionInfo = '';
         formCont.style.display = 'none';
         // var btn_enabled = true;
 
@@ -65,9 +69,18 @@
 
         //Geolocation
         if (navigator.geolocation) {
+            userInfo.innerHTML = "Getting your location. Please Wait...";
             navigator.geolocation.getCurrentPosition(
                 (position)=>{
-                    positionURL = `https://www.google.com/maps/@${position.coords.latitude},${position.coords.longitude},14z`;
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=17`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            let address = data['features'][0]['properties']['address'];
+                            positionInfo = `${address['road']}, ${address['suburb']}, ${address['city']} - ${address['postcode']}`;
+                            stopDrawing = false;
+                            userInfo.innerHTML = "Location found!";
+                            console.log(positionInfo);
+                        });
                 },
                 (error) => {
                     alert('Please allow location!');
@@ -79,7 +92,7 @@
             alert('Please allow location!');
         }
 
-        function login() {
+        function logout() {
             stopDrawing = true;
             ctx.drawImage(videoBuffer, 0, 0);
             loginBtn.disabled = true;
@@ -91,7 +104,7 @@
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
-                    newForm.append('position', positionURL);
+                    newForm.append('position', positionInfo);
                     
                     fetch(
                         "{% url 'signout' %}", {

@@ -10,8 +10,11 @@
 <body>
 
     <div class="has-text-centered mt-4">
-        <button class="button is-primary is-outlined m-4" onclick="button_callback()">
-            Start Face Detection
+        <button class="button is-dark m-3" onclick="button_callback()">
+            <span class="icon">
+                <i class="fas fa-smile"></i>
+            </span>
+            <span>Start Face Detection</span>
         </button>
     </div>
 
@@ -31,21 +34,23 @@
         </div>
     
         <div class="fieldCont">
-            <div class="field mt-1 mb-2 mx-4">
+            <div class="field mt-1 mb-2 mx-4" id="emailField">
                 <p class="control has-icons-left">
-                    <input class="input is-primary " type="text" placeholder="Your Email" id="email">
+                    <input class="input is-dark" type="text" placeholder="Your Email" id="email">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
                 </p>
             </div>
             <div class="has-text-centered">
-                <button class="button is-primary is-outlined m-3" id="login-btn" onclick="login()">
-                    SIGN IN
+                <button class="button is-dark m-3" onclick="login()" id="login-btn">
+                    <span class="icon">
+                        <i class="fas fa-sign-in"></i>
+                    </span>
+                    <span>SIGN IN</span>
                 </button>
             </div>
         </div>
-
     </div>
 
 
@@ -62,19 +67,37 @@
         var formCont = document.getElementById('form-container');
         const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
-        var stopDrawing = false;
+        var stopDrawing = true;
         var mycanvas = document.getElementsByTagName('canvas')[0];
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
-        var positionURL = '';
+        var positionInfo = '';
         formCont.style.display = 'none';
         loginBtn.disabled = true;
 
-        //Geolocation
+
+        // Hide email field if found in session
+        let emailId = "{{ email }}" ;
+        if(emailId !== ""){
+            email.value = emailId;
+            document.getElementById('emailField').style.display = 'none';
+        }
+            
+
+        // Geolocation
         if (navigator.geolocation) {
+            userInfo.innerHTML = "Getting your location. Please Wait...";
             navigator.geolocation.getCurrentPosition(
-                (position)=>{
-                    positionURL = `https://www.google.com/maps/@${position.coords.latitude},${position.coords.longitude},14z`;
+                (position) => {
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=17`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            let address = data['features'][0]['properties']['address'];
+                            positionInfo = `${address['road']}, ${address['suburb']}, ${address['city']} - ${address['postcode']}`;
+                            stopDrawing = false;
+                            userInfo.innerHTML = "Location found!";
+                            console.log(positionInfo);
+                        });
                 },
                 (error) => {
                     alert('Please allow location!');
@@ -100,7 +123,7 @@
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
                     newForm.append('email', email.value);
-                    newForm.append('position', positionURL);
+                    newForm.append('position', positionInfo);
 
                     fetch(
                         "{% url 'signin' %}", {

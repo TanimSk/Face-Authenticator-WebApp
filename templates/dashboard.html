@@ -5,12 +5,19 @@
 .redDiv{ background-color: #fcc; } 
 .yellowDiv{ background-color: #fbfbb1; } 
 .fieldCont{
-    max-width: 55rem;
+    max-width: 70rem;
     margin: 4rem auto auto auto;
+}
+.atBottom{
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 {% endblock %} 
 {% block title %}Dashboard{% endblock title %} {% block content %}
 
+
+{% if logs %}
 <div class="fieldCont">
     <div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <table class="table">
@@ -30,6 +37,7 @@
                 </tr>
             </thead>
             <tbody>
+ 
                 {% for log in logs %}
                 <tr>
                     <th>{{ forloop.counter }}</th>
@@ -38,24 +46,36 @@
                     <td>{{ log.delay_in }}</td>
                     <td>
                         {% if not log.location_in is None %}
-                        <a href="{{ log.location_in }}" target="_blank">Location</a>
+                        {{ log.location_in }}
                         {% endif %}
                     </td>
                     
                     
-                    <td {% if not log.late_leave %} class="yellowDiv" {% endif %}>{{ log.time_out }}</td>
+                    <td {% if not log.late_leave and not log.time_out is None %} class="yellowDiv" {% endif %}>
+                        {{ log.time_out }}
+                    </td>
                     <td>{{ log.delay_out }}</td>
                     <td>
                         {% if not log.location_out is None %}
-                        <a href="{{ log.location_out }}" target="_blank">Location</a>
+                        {{ log.location_out }}
                         {% endif %}
                     </td>
                     <td>{{ log.total_hours }}</td>
-                </tr>
+                </tr>               
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+{% else %}
+<div class="has-text-centered mt-5">
+    <span class="m-5 is-size-2">No data available</span>
+</div>
+{% endif %}
+
+<small class="m-3 atBottom">
+    Locations By: <a href="https://wiki.osmfoundation.org/wiki/Main_Page" target="_blank">OpenStreetMap</a>
+</small>
 
 {% endblock %}
