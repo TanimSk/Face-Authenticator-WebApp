@@ -2,37 +2,26 @@
 <script src="{% static 'canvas.js' %}"></script>
 <script src="{% static 'pico.js' %}"></script>
 <link rel="stylesheet" href="{% static 'styles.css' %}">
-{% endblock %} 
+{% endblock %}
 {% block style %}
 
 {% endblock %} {% block title %}Log In{% endblock title %} {% block content %}
 
 <body>
 
-    <div class="has-text-centered mt-4">
-        <button class="button is-dark m-3" onclick="button_callback()">
-            <span class="icon">
-                <i class="fas fa-smile"></i>
-            </span>
-            <span>Start Face Detection</span>
-        </button>
-    </div>
-
-    <hr>
-
-    <div id="form-container">
+    <div id="form-container" class="mt-5">
         <div class="cameraCanvas mb-3">
             <canvas width=640 height=450></canvas>
         </div>
-    
+
         <div id="msg" class="has-text-centered">
             <!-- face detected -->
         </div>
-    
+
         <div id="info" class="has-text-centered">
             <!-- user info -->
         </div>
-    
+
         <div class="has-text-centered">
             <button class="button is-dark m-3" onclick="logout()" id="login-btn">
                 <span class="icon">
@@ -62,16 +51,17 @@
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
         var positionInfo = '';
-        formCont.style.display = 'none';
-        // var btn_enabled = true;
+
+        button_callback();
 
         loginBtn.disabled = true;
 
         //Geolocation
         if (navigator.geolocation) {
-            userInfo.innerHTML = "Getting your location. Please Wait...";
+            msgDiv.innerHTML = "Please Wait ...";
+            userInfo.innerHTML = "Getting your location";
             navigator.geolocation.getCurrentPosition(
-                (position)=>{
+                (position) => {
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=17`)
                         .then((response) => response.json())
                         .then((data) => {
@@ -79,16 +69,15 @@
                             positionInfo = `${address['road']}, ${address['suburb']}, ${address['city']} - ${address['postcode']}`;
                             stopDrawing = false;
                             userInfo.innerHTML = "Location found!";
-                            console.log(positionInfo);
                         });
                 },
                 (error) => {
                     alert('Please allow location!');
                 },
-                {enableHighAccuracy: true}
+                { enableHighAccuracy: true }
             );
         }
-        else{
+        else {
             alert('Please allow location!');
         }
 
@@ -96,22 +85,22 @@
             stopDrawing = true;
             ctx.drawImage(videoBuffer, 0, 0);
             loginBtn.disabled = true;
+            msgDiv.innerHTML = "Validating your face and email";
             userInfo.innerHTML = "Please Wait...";
-            msgDiv.style.visibility = 'hidden';
-            
+
             mycanvas.toBlob(
-                function(blob) {
+                function (blob) {
                     var newForm = new FormData();
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
                     newForm.append('position', positionInfo);
-                    
+
                     fetch(
                         "{% url 'signout' %}", {
-                            method: 'post',
-                            redirect: 'follow',
-                            body: newForm
-                        }).then(
+                        method: 'post',
+                        redirect: 'follow',
+                        body: newForm
+                    }).then(
                         response => response.json()
                     ).then(
                         (data) => {
@@ -120,7 +109,6 @@
                             else if (data.stat === 'face_unmatched') userInfo.innerHTML = `<b>Couldn't recognize your face</b>`;
                             else if (data.stat === 'not_user') userInfo.innerHTML = `<b>Couldn't find your email in our DB</b>`;
                             stopDrawing = false;
-                            msgDiv.style.visibility = 'visible';
                         }
                     );
                 }
@@ -128,9 +116,8 @@
         }
 
         function button_callback() {
-            
-            // Scroll down and make form visble
-            formCont.style.display = 'block';
+
+            // Scroll down
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             /*
                 (0) check whether we're already running face detection
@@ -141,74 +128,75 @@
                 (1) prepare the pico.js face detector
             */
             var update_memory = pico.instantiate_detection_memory(5); // we will use the detecions of the last 5 frames
-            var facefinder_classify_region = function(r, c, s, pixels, ldim) {
+            var facefinder_classify_region = function (r, c, s, pixels, ldim) {
                 return -1.0;
             };
             var cascadeurl = 'https://raw.githubusercontent.com/nenadmarkus/pico/c2e81f9d23cc11d1a612fd21e4f9de0921a5d0d9/rnt/cascades/facefinder';
-            fetch(cascadeurl).then(function(response) {
-                    response.arrayBuffer().then(function(buffer) {
-                        var bytes = new Int8Array(buffer);
-                        facefinder_classify_region = pico.unpack_cascade(bytes);
-                        console.log('* cascade loaded');
-                    })
+            fetch(cascadeurl).then(function (response) {
+                response.arrayBuffer().then(function (buffer) {
+                    var bytes = new Int8Array(buffer);
+                    facefinder_classify_region = pico.unpack_cascade(bytes);
+                    console.log('* cascade loaded');
                 })
-                /*
-                    (2) get the drawing context on the canvas and define a function to transform an RGBA image to grayscale
-                */
+            })
+            /*
+                (2) get the drawing context on the canvas and define a function to transform an RGBA image to grayscale
+            */
 
             function rgba_to_grayscale(rgba, nrows, ncols) {
                 var gray = new Uint8Array(nrows * ncols);
                 for (var r = 0; r < nrows; ++r)
                     for (var c = 0; c < ncols; ++c)
-                    // gray = 0.2*red + 0.7*green + 0.1*blue
+                        // gray = 0.2*red + 0.7*green + 0.1*blue
                         gray[r * ncols + c] = (2 * rgba[r * 4 * ncols + 4 * c + 0] + 7 * rgba[r * 4 * ncols + 4 * c + 1] + 1 * rgba[r * 4 * ncols + 4 * c + 2]) / 10;
                 return gray;
             }
             /*
                 (3) this function is called each time a video frame becomes available
             */
-            var processfn = function(video, dt) {
-                    faceDetected = false;
-                    // render the video frame to the canvas element and extract RGBA pixel data
-                    videoBuffer = video;
-                    ctx.drawImage(video, 0, 0);
-                    var rgba = ctx.getImageData(0, 0, 640, 480).data;
-                    // prepare input to `run_cascade`
-                    image = {
-                        "pixels": rgba_to_grayscale(rgba, 480, 640),
-                        "nrows": 480,
-                        "ncols": 640,
-                        "ldim": 640
+            var processfn = function (video, dt) {
+                faceDetected = false;
+                // render the video frame to the canvas element and extract RGBA pixel data
+                videoBuffer = video;
+                ctx.drawImage(video, 0, 0);
+                var rgba = ctx.getImageData(0, 0, 640, 480).data;
+                // prepare input to `run_cascade`
+                image = {
+                    "pixels": rgba_to_grayscale(rgba, 480, 640),
+                    "nrows": 480,
+                    "ncols": 640,
+                    "ldim": 640
+                }
+                params = {
+                    "shiftfactor": 0.1, // move the detection window by 10% of its size
+                    "minsize": 100, // minimum size of a face
+                    "maxsize": 1000, // maximum size of a face
+                    "scalefactor": 1.1 // for multiscale processing: resize the detection window by 10% when moving to the higher scale
+                }
+                // run the cascade over the frame and cluster the obtained detections
+                // dets is an array that contains (r, c, s, q) quadruplets
+                // (representing row, column, scale and detection score)
+                dets = pico.run_cascade(image, facefinder_classify_region, params);
+                dets = update_memory(dets);
+                dets = pico.cluster_detections(dets, 0.2); // set IoU threshold to 0.2
+                // draw detections
+                for (i = 0; i < dets.length; ++i) {
+                    // check the detection score
+                    // if it's above the threshold, draw it
+                    // (the constant 50.0 is empirical: other cascades might require a different one)
+
+                    if (dets[i][3] > 50.0 && !stopDrawing) {
+                        ctx.beginPath();
+                        ctx.arc(dets[i][1], dets[i][0], dets[i][2] / 2, 0, 2 * Math.PI, false);
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = 'red';
+                        ctx.stroke();
+                        faceDetected = true;
+
                     }
-                    params = {
-                            "shiftfactor": 0.1, // move the detection window by 10% of its size
-                            "minsize": 100, // minimum size of a face
-                            "maxsize": 1000, // maximum size of a face
-                            "scalefactor": 1.1 // for multiscale processing: resize the detection window by 10% when moving to the higher scale
-                        }
-                        // run the cascade over the frame and cluster the obtained detections
-                        // dets is an array that contains (r, c, s, q) quadruplets
-                        // (representing row, column, scale and detection score)
-                    dets = pico.run_cascade(image, facefinder_classify_region, params);
-                    dets = update_memory(dets);
-                    dets = pico.cluster_detections(dets, 0.2); // set IoU threshold to 0.2
-                    // draw detections
-                    for (i = 0; i < dets.length; ++i) {
-                        // check the detection score
-                        // if it's above the threshold, draw it
-                        // (the constant 50.0 is empirical: other cascades might require a different one)
+                }
 
-                        if (dets[i][3] > 50.0 && !stopDrawing) {
-                            ctx.beginPath();
-                            ctx.arc(dets[i][1], dets[i][0], dets[i][2] / 2, 0, 2 * Math.PI, false);
-                            ctx.lineWidth = 3;
-                            ctx.strokeStyle = 'red';
-                            ctx.stroke();
-                            faceDetected = true;
-
-                        }
-                    }
-
+                if (!stopDrawing) {
                     if (faceDetected) {
                         if (faceDetectedInt !== 2) faceDetectedInt = 1;
                         if (faceDetectedInt === 1) {
@@ -225,9 +213,10 @@
                         }
                     }
                 }
-                /*
-                    (4) instantiate camera handling (see https://github.com/cbrandolino/camvas)
-                */
+            }
+            /*
+                (4) instantiate camera handling (see https://github.com/cbrandolino/camvas)
+            */
             var mycamvas = new camvas(ctx, processfn);
             /*
                 (5) it seems that everything went well

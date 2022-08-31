@@ -1,0 +1,83 @@
+{% extends "base.html" %} {% load static %} 
+{% block head %}
+{% endblock %} 
+{% block style %} 
+.redDiv{ background-color: #fcc; } 
+.yellowDiv{ background-color: #fbfbb1; } 
+.fieldCont{
+    max-width: 70rem;
+    margin: 4rem auto auto auto;
+    min-height: 80vh;
+}
+.mapAttr{
+    float: left;
+}
+{% endblock %} 
+{% block title %}Dashboard{% endblock title %} {% block content %}
+
+<div class="has-text-centered is-size-2 mt-5">
+    Today's record
+</div>
+
+{% if logs %}
+<div class="fieldCont">
+    <div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SL.</th>
+                    <th>Employee Name</th>
+                    <th>Time In</th>
+                    <th>Delay</th>
+                    <th>Location</th>
+
+                    <th>Time Out</th>
+                    <th>Delay</th>
+                    <th>Location</th>
+
+                    <th>Total Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+ 
+                {% for log in logs %}
+                <tr>
+                    <th>{{ forloop.counter }}</th>
+                    <td>{{ log.name }}</td>
+                    <td {% if log.late_join %} class="redDiv" {% endif %}>{{ log.time_in }}</td>
+                    <td>{{ log.delay_in }}</td>
+                    <td>
+                        {% if not log.location_in is None %}
+                        {{ log.location_in }}
+                        {% endif %}
+                    </td>
+                    
+                    
+                    <td {% if not log.late_leave and not log.time_out is None %} class="yellowDiv" {% endif %}>
+                        {{ log.time_out }}
+                    </td>
+                    <td>{{ log.delay_out }}</td>
+                    <td>
+                        {% if not log.location_out is None %}
+                        {{ log.location_out }}
+                        {% endif %}
+                    </td>
+                    <td>{{ log.total_hours }}</td>
+                </tr>               
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% else %}
+<div class="fieldCont has-text-centered mt-5">
+    <span class="m-5 is-size-2">No data available</span>
+</div>
+{% endif %}
+
+<small class="mx-3 mt-5 mb-2 mapAttr">
+    Locations By: <a href="https://wiki.osmfoundation.org/wiki/Main_Page" target="_blank">OpenStreetMap</a>
+</small>
+
+{% endblock %}

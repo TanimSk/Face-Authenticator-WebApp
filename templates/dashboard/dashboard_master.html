@@ -7,15 +7,17 @@
 .fieldCont{
     max-width: 70rem;
     margin: 4rem auto auto auto;
+    min-height: 80vh;
 }
-.atBottom{
-    position: absolute;
-    bottom: 0;
-    left: 0;
+.mapAttr{
+    float: left;
 }
 {% endblock %} 
 {% block title %}Dashboard{% endblock title %} {% block content %}
 
+<div class="has-text-centered is-size-2 mt-5">
+    Master record
+</div>
 
 {% if logs %}
 <div class="fieldCont">
@@ -69,12 +71,12 @@
 </div>
 
 {% else %}
-<div class="has-text-centered mt-5">
+<div class="fieldCont has-text-centered mt-5">
     <span class="m-5 is-size-2">No data available</span>
 </div>
 {% endif %}
 
-<small class="m-3 atBottom">
+<small class="mx-3 mt-5 mb-2 mapAttr">
     Locations By: <a href="https://wiki.osmfoundation.org/wiki/Main_Page" target="_blank">OpenStreetMap</a>
 </small>
 
