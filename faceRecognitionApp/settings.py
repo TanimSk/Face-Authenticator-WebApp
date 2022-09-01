@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-c_=k0yc12c-*!m)x2=$lbq8cbz%8pxpks*k!n2p$xo_1s_bclt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['porichoy.digital', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['https://onurup.xyz/']
+CSRF_TRUSTED_ORIGINS = ['https://porichoy.digital/']
 
 
 # Application definition

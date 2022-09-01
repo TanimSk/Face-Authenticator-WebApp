@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import *
 
 class RegisteredUserAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", )
+    list_display = ("name", "email", "department", )
 
 class UserImageAdmin(admin.ModelAdmin):
     list_display = ('user', "image", )
@@ -11,8 +11,8 @@ class UserImageAdmin(admin.ModelAdmin):
 class LogAdmin(admin.ModelAdmin):
     list_display = \
     ('name',
-    'time_in', 'late_join', 'location_in', 'delay_in',
-    'time_out', 'late_leave', 'location_out', 'delay_out',
+    'time_in', 'location_in', 'delay_in',
+    'time_out', 'location_out', 'delay_out',
     'total_hours', 'user',)
 
 class TimingAdmin(admin.ModelAdmin):

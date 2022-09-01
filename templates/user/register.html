@@ -40,6 +40,15 @@
                 </span>
             </p>
         </div>
+
+        <div class="field mt-1 mb-2 mx-4">
+            <p class="control has-icons-left">
+                <input class="input is-dark" type="text" placeholder="Department" id="dept">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-puzzle-piece"></i>
+                </span>
+            </p>
+        </div>
     </div>
     
     
@@ -99,6 +108,7 @@
         function sendData(btn) {
             const userName = document.getElementById('username').value;
             const email = document.getElementById('email').value;
+            const dept = document.getElementById('dept').value;
             
             const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
@@ -111,6 +121,7 @@
             let formData = new FormData();
             formData.append('user', userName);
             formData.append('email', email);
+            formData.append('dept', dept);
             formData.append('csrfmiddlewaretoken', token);
 
             for (let img of imgs.files) {
@@ -127,6 +138,11 @@
                 (data) => {
                     if (data.stat) {
                         _notification.innerHTML = "Account Registered !";
+                        _notification.style.visibility = 'visible';
+                        btn.disabled = false;
+                    }
+                    else if(!data.stat){
+                        _notification.innerHTML = "An account with the same email already exists!";
                         _notification.style.visibility = 'visible';
                         btn.disabled = false;
                     }

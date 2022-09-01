@@ -51,6 +51,7 @@
         var ctx = mycanvas.getContext('2d');
         var videoBuffer = null;
         var positionInfo = '';
+        var position_url = '';
 
         button_callback();
 
@@ -69,6 +70,7 @@
                             positionInfo = `${address['road']}, ${address['suburb']}, ${address['city']} - ${address['postcode']}`;
                             stopDrawing = false;
                             userInfo.innerHTML = "Location found!";
+                            position_url = `https://www.google.com/maps/search/?api=1&query=${position.coords.latitude},${position.coords.longitude}`;
                         });
                 },
                 (error) => {
@@ -94,6 +96,7 @@
                     newForm.append('img', blob, 'myImage.png');
                     newForm.append('csrfmiddlewaretoken', token);
                     newForm.append('position', positionInfo);
+                    newForm.append('position_url', position_url);
 
                     fetch(
                         "{% url 'signout' %}", {
