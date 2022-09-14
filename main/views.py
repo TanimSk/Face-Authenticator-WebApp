@@ -19,7 +19,11 @@ def home(req):
 
     now_date = str(datetime.now(timezone('Asia/Dhaka')).date())
 
-    signed_in = False if is_signed_in == 'N' or is_signed_in is None or now_date != req.session['login_date'] else True
+    if now_date != req.session.get('login_date', ''):
+        signed_in = False
+        req.session['is_signed_in'] = 'N'
+    else:
+        signed_in = False if is_signed_in == 'N' or is_signed_in is None  else True
 
     if username is None or email is None:
         msg = '<br><br><br>' 
