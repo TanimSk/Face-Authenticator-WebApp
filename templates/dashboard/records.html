@@ -16,7 +16,7 @@
 {% block title %}Dashboard{% endblock title %} {% block content %}
 
 <div class="has-text-centered is-size-2 mt-5">
-    Master record
+    {{ heading }}
 </div>
 
 {% if logs %}
@@ -48,7 +48,9 @@
                     <td>{{ log.delay_in }}</td>
                     <td>
                         {% if not log.location_in is None %}
-                        {{ log.location_in }}
+                        <a href="{{ log.location_in_url }}" target="_blank">
+                            {{ log.location_in }}
+                        </a>
                         {% endif %}
                     </td>
                     
@@ -59,7 +61,9 @@
                     <td>{{ log.delay_out }}</td>
                     <td>
                         {% if not log.location_out is None %}
-                        {{ log.location_out }}
+                        <a href="{{ log.location_out_url }}" target="_blank">
+                            {{ log.location_out }}
+                        </a>
                         {% endif %}
                     </td>
                     <td>{{ log.total_hours }}</td>

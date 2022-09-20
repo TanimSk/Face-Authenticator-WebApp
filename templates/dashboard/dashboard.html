@@ -1,0 +1,60 @@
+{% extends "base.html" %} {% load static %}
+{% block head %}
+{% endblock %}
+
+{% block style %}
+.vpositioned{
+margin-top: 20vh;
+}
+.hpositioned{
+    margin: 1rem auto auto auto;
+    max-width: 10rem;
+}
+{% endblock %}
+
+{% block title %}Dashboard{% endblock title %}
+{% block content %}
+<div class="has-text-centered is-size-2 mt-5 ">
+    Dashboard
+</div>
+
+<div class="has-text-centered vpositioned">
+    <div class="mt-2">
+        <a href="{% url 'dashboard-today' %}">
+            Today's Record
+        </a>
+    </div>
+    
+    <br>
+
+    <div class="mt-2">
+        <a href="{% url 'dashboard-master' %}">
+            Master Record
+        </a>
+    </div>
+    
+    <br>
+
+    <div class="field has-addons hpositioned m">
+        <div class="control">
+            <input class="input is-dark" type="text" placeholder="Query Days" id="days_record">
+        </div>
+        <div class="control">
+            <a class="button is-dark" id="generate-btn">
+                <i class="fas fa-external-link"></i>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    let Records = document.getElementById('days_record');
+    let Generate = document.getElementById('generate-btn');
+    Generate.addEventListener('click', () => {
+        window.location.href = `{% url 'generate-report' %}${Records.value}`;
+    });
+</script>
+
+{% endblock %}

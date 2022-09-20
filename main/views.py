@@ -1,5 +1,3 @@
-from genericpath import exists
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, HttpResponse, redirect
 from .models import *
@@ -189,21 +187,6 @@ def register(req):
         return HttpResponse(json.dumps({'stat': True}))
 
     return render(req, 'user/register.html')
-
-
-
-@login_required(login_url='login')
-def dashboard_today(req):
-    today_date =  datetime.now(timezone('Asia/Dhaka')).today()
-    user_logs = Log.objects.all().filter(time_in__date=today_date)
-    print(user_logs.count())
-    return render(req, 'dashboard/dashboard_today.html', {'logs': user_logs})
-
-
-@login_required(login_url='login')
-def dashboard_master(req):
-    user_logs = Log.objects.all().order_by('-id')
-    return render(req, 'dashboard/dashboard_master.html', {'logs': user_logs})
 
 
 
