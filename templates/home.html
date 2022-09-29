@@ -1,48 +1,48 @@
-{% extends "base.html" %} {% block head %} {% endblock %} 
-{% block style %} 
-.marginTop{
-    margin-top: 10vh !important;
+{% extends "base.html" %}
+{% block head %} {% endblock %}
+{% block style %}
+.btn-div-wrapper{
+margin-top: 12vh !important;
+width: 100%;
 }
 .regBtn{
-    position: absolute;
-    bottom: 0;
-    right: 0;
+position: absolute;
+bottom: 0;
+right: 0;
 }
-{% endblock %} 
-{% block title %}Home{% endblock title %} {% block content %}
+{% endblock %}
+{% block title %}Home{% endblock title %}
+
+{% block content %}
 
 <div class="has-text-centered mt-5 is-size-3">
     {{ msg | safe}}
 </div>
 
-<div class="columns is-mobile is-multiline is-centered marginTop">
-    
-    <div class="column is-narrow">
-        <button class="button is-dark m-3"
-        {% if signed_in %} disabled {% endif %}
-        onclick="window.location.href = {% url 'signin' %}"
-        >
-            <span class="icon">
-                <i class="fas fa-toggle-on"></i>
-            </span>
-            <span>SIGN IN</span>
-        </button>
+
+
+    <div class="columns is-mobile is-multiline is-centered btn-div-wrapper">
+        <div class="column is-narrow">
+            <button class="button is-dark m-3" {% if signed_in %} disabled {% endif %}
+                onclick="window.location.href = {% url 'signin' %}">
+                <span class="icon">
+                    <i class="fas fa-toggle-on"></i>
+                </span>
+                <span>SIGN IN</span>
+            </button>
+        </div>
+
+        <div class="column is-narrow">
+            <button class="button is-dark m-3" {% if not signed_in %} disabled {% endif %}
+                onclick="window.location.href = {% url 'signout' %}">
+                <span class="icon">
+                    <i class="fas fa-toggle-off"></i>
+                </span>
+                <span>SIGN OUT</span>
+            </button>
+        </div>
     </div>
 
-    <div class="column is-narrow">
-
-        <button class="button is-dark m-3"
-        {% if not signed_in %} disabled {% endif %}
-        onclick="window.location.href = {% url 'signout' %}"
-        >
-            <span class="icon">
-                <i class="fas fa-toggle-off"></i>
-            </span>
-            <span>SIGN OUT</span>
-        </button>
-
-    </div>
-</div>
 
 <div class="regBtn">
     <a href="{% url 'register' %}">

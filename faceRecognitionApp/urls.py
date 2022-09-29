@@ -17,6 +17,6 @@ urlpatterns = [
     path('dashboard-today/', dashboard_view.dashboard_today, name='dashboard-today'),
     path('dashboard-master/', dashboard_view.dashboard_master, name='dashboard-master'),
     path('generate-report/', dashboard_view.generate_report, name='generate-report'),
-    path('generate-report/<int:days>', dashboard_view.generate_report, name='generate-report'),
+    path('generate-report/<str:month>', dashboard_view.generate_report, name='generate-report'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

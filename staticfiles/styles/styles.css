@@ -1,0 +1,48 @@
+* {
+    font-family: "ankaCoder";
+}
+
+body{
+    min-height: 100vh;
+}
+
+.fieldCont{
+    max-width: 35rem;
+    margin: auto;
+}
+
+.navbar-item img {
+    max-height: 2.9rem;
+}
+
+.navbar {
+    background-color: #373535;
+}
+
+.header-txt {
+    color: white;
+    font-size: 2rem;
+}
+
+@media screen and (max-width: 700px) {
+    .header-txt{
+        font-size: 1.5rem;
+    }
+    .navbar-item img {
+        max-height: 2.1rem;
+    }
+}
+
+
+.cameraCanvas{
+    width: 640px;
+    height: 450px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+#msg, #info{
+    font-weight: bold;
+    text-transform: uppercase;
+}

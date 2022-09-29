@@ -1,92 +1,176 @@
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        padding: .3rem;
-    }
-    *{
-        font-size: .85rem;
-    }
-    .printBtn {
-        margin: 1rem 0rem 1rem .5rem;
-    }
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <link rel="stylesheet" href="{% static 'styles/report.css' %}">
+</head>
 
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-    }
-    
-</style>
-
-<button class="printBtn no-print" onclick="window.print()">
-    Print
-</button>
-
-{% if logs %}
-<div>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>SL.</th>
-                    <th>Employee Name</th>
-                    <th>Time In</th>
-                    <th>Delay</th>
-                    <th>Location</th>
-
-                    <th>Time Out</th>
-                    <th>Delay</th>
-                    <th>Location</th>
-
-                    <th>Total Hours</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                {% for log in logs %}
-                <tr>
-                    <th>{{ forloop.counter }}</th>
-                    <td>{{ log.name }}</td>
-                    <td>{{ log.time_in }}</td>
-
-                    <td>{{ log.delay_in }}
-                        {% if log.late_join %}*{% endif %}
-                    </td>
-
-                    <td>
-                        {% if not log.location_in is None %}
-                        {{ log.location_in }}
-                        {% endif %}
-                    </td>
-
-                    <td>
-                        {{ log.time_out }}
-                        {% if not log.late_leave and not log.time_out is None %}*
-                        {% endif %}
-                    </td>
-                    <td>{{ log.delay_out }}</td>
-                    <td>
-                        {% if not log.location_out is None %}
-                        {{ log.location_out }}
-                        {% endif %}
-                    </td>
-                    <td>{{ log.total_hours }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<body>
+    <div class="reportIcon">
+        <img src="{% static 'reportIcon.png' %}" alt="icon">
     </div>
-</div>
 
-{% else %}
-<h1>
-    No data Available
-</h1>
-{% endif %}
 
-{% endblock %}
+    <button class="printBtn no-print" onclick="window.print()">
+        Print
+    </button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    SL No.
+                </th>
+                <th>
+                    name
+                </th>
+                <th>
+                    Deptarment
+                </th>
+                <th>
+                    Days in {{month_name}}
+                </th>
+                <th>
+                    Holidays
+                </th>
+                <th>
+                    Working Day
+                </th>
+                <th>
+                    Absent
+                </th>
+                <th>
+                    Total Working Days
+                </th>
+                <th>
+                    Net Payable Days in {{month_name}}
+                </th>
+                <th>
+                    %
+                </th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody">
+
+        </tbody>
+    </table>
+
+    <script>
+        let tableBody = document.getElementById("tableBody");
+
+        let user_logs = JSON.parse('{{logs | safe}}');;
+        user_logs.forEach((element, index) => {
+
+            let absent_days = element.days_month - element.holidays - element.present;
+            let total_working_days = element.days_month - element.holidays;
+
+            tableBody.innerHTML +=
+                `
+                <tr>
+                    <td>
+                        ${index+1}
+                    </td>
+                    <td>
+                        ${element.name}
+                    </td>
+                    <td>
+                        ${element.dept}
+                    </td>
+                    <td>
+                        ${element.days_month}
+                    </td>
+                    <td>
+                        ${element.holidays}
+                    </td>
+                    <td>
+                        ${element.present}
+                    </td>
+                    <td>
+                        ${absent_days}
+                    </td>
+                    <td>
+                        ${total_working_days}
+                    </td>
+                    <td>
+                        ${element.days_month}
+                    </td>
+                    <td>
+                        ${((element.present / total_working_days)*100).toFixed(2)}%
+                    </td>
+                </tr>    
+                `;
+        });
+
+    </script>
+
+
+    <!-- {% if logs %}
+    <div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL.</th>
+                        <th>Name</th>
+                        <th>Time In</th>
+                        <th>Delay</th>
+                        <th>Location</th>
+
+                        <th>Time Out</th>
+                        <th>Delay</th>
+                        <th>Location</th>
+
+                        <th>Total Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ log.name }}</td>
+                        <td>{{ log.time_in }}</td>
+
+                        <td>{{ log.delay_in }}
+                            {% if log.late_join %}*{% endif %}
+                        </td>
+
+                        <td>
+                            {% if not log.location_in is None %}
+                            {{ log.location_in }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ log.time_out }}
+                            {% if not log.late_leave and not log.time_out is None %}*
+                            {% endif %}
+                        </td>
+                        <td>{{ log.delay_out }}</td>
+                        <td>
+                            {% if not log.location_out is None %}
+                            {{ log.location_out }}
+                            {% endif %}
+                        </td>
+                        <td>{{ log.total_hours }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <h1>
+        No data Available
+    </h1>
+    {% endif %} -->
+</body>
+
+</html>

@@ -11,7 +11,7 @@
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     {% block head %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <style>
         {%block style %}
         {% endblock %}
@@ -38,7 +38,7 @@
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'home' %}">
                 <img src="{% static 'logo.png' %}" alt="Face Recognition">
-                <span class="is-size-3 ml-4 header-txt">
+                <span class="ml-4 header-txt">
                     <b>porichoy.digital</b>
                 </span>
             </a>

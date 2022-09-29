@@ -7,8 +7,8 @@
 margin-top: 20vh;
 }
 .hpositioned{
-    margin: 1rem auto auto auto;
-    max-width: 10rem;
+margin: 1rem auto auto auto;
+max-width: 10rem;
 }
 {% endblock %}
 
@@ -24,7 +24,7 @@ margin-top: 20vh;
             Today's Record
         </a>
     </div>
-    
+
     <br>
 
     <div class="mt-2">
@@ -32,15 +32,29 @@ margin-top: 20vh;
             Master Record
         </a>
     </div>
-    
+
     <br>
 
-    <div class="field has-addons hpositioned m">
-        <div class="control">
-            <input class="input is-dark" type="text" placeholder="Query Days" id="days_record">
+    <div class="field has-addons hpositioned">
+        <div class="select is-small">
+            <select id="monthSelection">
+                <option disabled selected>Select Month</option>
+                <option value='1'>January</option>
+                <option value='2'>February</option>
+                <option value='3'>March</option>
+                <option value='4'>April</option>
+                <option value='5'>May</option>
+                <option value='6'>June</option>
+                <option value='7'>July</option>
+                <option value='8'>August</option>
+                <option value='9'>September</option>
+                <option value='10'>October</option>
+                <option value='11'>November</option>
+                <option value='12'>December</option>
+            </select>
         </div>
         <div class="control">
-            <a class="button is-dark" id="generate-btn">
+            <a class="button is-dark is-small" id="generate-btn">
                 <i class="fas fa-external-link"></i>
             </a>
         </div>
@@ -50,10 +64,10 @@ margin-top: 20vh;
 
 
 <script>
-    let Records = document.getElementById('days_record');
+    let selection = document.getElementById('monthSelection');
     let Generate = document.getElementById('generate-btn');
     Generate.addEventListener('click', () => {
-        window.location.href = `{% url 'generate-report' %}${Records.value}`;
+        window.location.href = `{% url 'generate-report' %}${selection.value}`;
     });
 </script>
 
