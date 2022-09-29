@@ -6,7 +6,33 @@
     width: 18rem;
 }
 
+/* buttons Style */
+.btn-container{
+    text-align: center;
+}
+.sorting_selection{
+    width: 9rem;
+    
+}
+.sorting_btn{
+    width: 3rem;
+}
 
+.printBtn {
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+    width: 10rem;
+}
+
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+
+
+/* table styles */
 table{
     margin: 1rem auto 3rem auto;
 }
@@ -26,18 +52,5 @@ th {
 }
 
 * {
-    font-size: 1rem;
-}
-
-.printBtn {
-    margin: 1rem 0rem 1rem .5rem;
-    position: absolute;
-    top: .5rem;
-    left: .5rem;
-}
-
-@media print {
-    .no-print {
-        display: none !important;
-    }
+    font-size: .9rem;
 }

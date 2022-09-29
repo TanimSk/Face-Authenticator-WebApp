@@ -15,10 +15,20 @@
         <img src="{% static 'reportIcon.png' %}" alt="icon">
     </div>
 
+    <div class="btn-container">
+        <button class="printBtn no-print" onclick="window.print()">
+            Print
+        </button>
+        <br>
+        <select id="sorting_selection" class="no-print">
+            <option disabled selected value="">Sort By</option>
+            <option value="working_days">Working Days</option>
+            <option value="absent">Absent</option>
+            <option value="percentage">Percentage</option>
+        </select>
+        <button onclick="sortData()" id="sorting_btn" class="no-print">Sort</button>
+    </div>
 
-    <button class="printBtn no-print" onclick="window.print()">
-        Print
-    </button>
 
     <table>
         <thead>
@@ -63,114 +73,88 @@
 
     <script>
         let tableBody = document.getElementById("tableBody");
+        let user_logs = JSON.parse('{{logs | safe}}');
 
-        let user_logs = JSON.parse('{{logs | safe}}');;
-        user_logs.forEach((element, index) => {
+        update_table(user_logs);
 
-            let absent_days = element.days_month - element.holidays - element.present;
-            let total_working_days = element.days_month - element.holidays;
 
-            tableBody.innerHTML +=
-                `
-                <tr>
-                    <td>
-                        ${index+1}
-                    </td>
-                    <td>
-                        ${element.name}
-                    </td>
-                    <td>
-                        ${element.dept}
-                    </td>
-                    <td>
-                        ${element.days_month}
-                    </td>
-                    <td>
-                        ${element.holidays}
-                    </td>
-                    <td>
-                        ${element.present}
-                    </td>
-                    <td>
-                        ${absent_days}
-                    </td>
-                    <td>
-                        ${total_working_days}
-                    </td>
-                    <td>
-                        ${element.days_month}
-                    </td>
-                    <td>
-                        ${((element.present / total_working_days)*100).toFixed(2)}%
-                    </td>
-                </tr>    
-                `;
-        });
+        function sortData() {
+            let sorting_target = document.getElementById('sorting_selection').value;
+
+            // Sort by working days
+            if (sorting_target === 'working_days') {
+                user_logs.sort(function (a, b) {
+                    return b.present - a.present;
+                });
+            }
+
+            // Sort by absent days
+            else if (sorting_target === 'absent') {
+                user_logs.sort(function (a, b) {
+                    return (b.days_month - b.holidays - b.present) - (a.days_month - a.holidays - a.present);
+                });
+            }
+
+            // Sort by %
+            else if (sorting_target === 'percentage') {
+                user_logs.sort(function (a, b) {
+                    return b.present - a.present;
+                });
+            }
+
+            tableBody.innerHTML = "";
+            update_table(user_logs);
+        }
+
+
+
+        function update_table(data) {
+            user_logs.forEach((element, index) => {
+
+                let absent_days = element.days_month - element.holidays - element.present;
+                let total_working_days = element.days_month - element.holidays;
+
+                tableBody.innerHTML +=
+                    `
+                        <tr>
+                            <td>
+                                ${index + 1}
+                            </td>
+                            <td>
+                                ${element.name}
+                            </td>
+                            <td>
+                                ${element.dept}
+                            </td>
+                            <td>
+                                ${element.days_month}
+                            </td>
+                            <td>
+                                ${element.holidays}
+                            </td>
+                            <td>
+                                ${element.present}
+                            </td>
+                            <td>
+                                ${absent_days}
+                            </td>
+                            <td>
+                                ${total_working_days}
+                            </td>
+                            <td>
+                                ${element.days_month}
+                            </td>
+                            <td>
+                                ${((element.present / total_working_days) * 100).toFixed(2)}%
+                            </td>
+                        </tr>    
+                        `;
+            });
+        }
+
 
     </script>
 
-
-    <!-- {% if logs %}
-    <div>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>SL.</th>
-                        <th>Name</th>
-                        <th>Time In</th>
-                        <th>Delay</th>
-                        <th>Location</th>
-
-                        <th>Time Out</th>
-                        <th>Delay</th>
-                        <th>Location</th>
-
-                        <th>Total Hours</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% for log in logs %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ log.name }}</td>
-                        <td>{{ log.time_in }}</td>
-
-                        <td>{{ log.delay_in }}
-                            {% if log.late_join %}*{% endif %}
-                        </td>
-
-                        <td>
-                            {% if not log.location_in is None %}
-                            {{ log.location_in }}
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {{ log.time_out }}
-                            {% if not log.late_leave and not log.time_out is None %}*
-                            {% endif %}
-                        </td>
-                        <td>{{ log.delay_out }}</td>
-                        <td>
-                            {% if not log.location_out is None %}
-                            {{ log.location_out }}
-                            {% endif %}
-                        </td>
-                        <td>{{ log.total_hours }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    {% else %}
-    <h1>
-        No data Available
-    </h1>
-    {% endif %} -->
 </body>
 
 </html>
