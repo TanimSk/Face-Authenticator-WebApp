@@ -44,12 +44,15 @@ def generate_report(req, month=None):
         registered_users = RegisteredUser.objects.all().order_by('-id')
         for registered_user in registered_users:
             days_present = Log.objects.all().filter(user=registered_user, time_in__month=month).count()
+            late_entry = Log.objects.all().filter(user=registered_user, late_join=True).count()
+            
             user_logs.append({
                 'name': registered_user.name,
                 'dept': registered_user.department,
                 'holidays': holidays,
                 'present': days_present,
-                'days_month': daysInMonth
+                'days_month': daysInMonth,
+                'late_entries': late_entry
             })
 
     else:

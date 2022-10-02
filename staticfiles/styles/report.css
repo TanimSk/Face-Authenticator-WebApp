@@ -10,12 +10,9 @@
 .btn-container{
     text-align: center;
 }
-.sorting_selection{
-    width: 9rem;
+#sorting_selection{
+    width: 10rem;
     
-}
-.sorting_btn{
-    width: 3rem;
 }
 
 .printBtn {
@@ -50,6 +47,8 @@ th {
     background-color: rgb(180, 180, 180);
     padding: 1rem;
 }
+
+tr:nth-child(even) {background-color: #ececec;}
 
 * {
     font-size: .9rem;

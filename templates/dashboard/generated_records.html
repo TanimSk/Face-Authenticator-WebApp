@@ -20,13 +20,13 @@
             Print
         </button>
         <br>
-        <select id="sorting_selection" class="no-print">
+        <select id="sorting_selection" class="no-print" onchange="sortData()">
             <option disabled selected value="">Sort By</option>
             <option value="working_days">Working Days</option>
             <option value="absent">Absent</option>
+            <option value="late_entry">Late Entry</option>
             <option value="percentage">Percentage</option>
         </select>
-        <button onclick="sortData()" id="sorting_btn" class="no-print">Sort</button>
     </div>
 
 
@@ -56,6 +56,9 @@
                 </th>
                 <th>
                     Total Working Days
+                </th>
+                <th>
+                    Late Entries (Days)
                 </th>
                 <th>
                     Net Payable Days in {{month_name}}
@@ -95,12 +98,20 @@
                 });
             }
 
+            // Sort by Total Days of late entry
+            else if (sorting_target === 'late_entry') {
+                user_logs.sort(function (a, b) {
+                    return b.late_entries - a.late_entries;
+                });
+            }
+
             // Sort by %
             else if (sorting_target === 'percentage') {
                 user_logs.sort(function (a, b) {
                     return b.present - a.present;
                 });
             }
+
 
             tableBody.innerHTML = "";
             update_table(user_logs);
@@ -140,6 +151,9 @@
                             </td>
                             <td>
                                 ${total_working_days}
+                            </td>
+                            <td>
+                                ${element.late_entries}
                             </td>
                             <td>
                                 ${element.days_month}
