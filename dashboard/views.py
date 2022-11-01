@@ -7,6 +7,7 @@ from pytz import timezone
 import calendar
 import json
 
+
 @login_required(login_url='login')
 def dashboard_today(req):
     today_date = datetime.now(timezone('Asia/Dhaka')).today()
@@ -28,7 +29,7 @@ def dashboard(req):
 @login_required(login_url='login')
 def generate_report(req, month=None):
 
-    if month is not None and (month.isnumeric() and 12>=int(month)>=1):
+    if month is not None and (month.isnumeric() and 12 >= int(month) >= 1):
 
         # Get month name and number of holidays
         month_name = calendar.month_name[int(month)]
@@ -36,16 +37,19 @@ def generate_report(req, month=None):
 
         # Get number of days of given month
         currentDate = datetime.now(timezone('Asia/Dhaka')).today()
-        daysInMonth= calendar.monthrange(currentDate.year, int(month))[1]
-
+        daysInMonth = calendar.monthrange(currentDate.year, int(month))[1]
 
         user_logs = []
-
         registered_users = RegisteredUser.objects.all().order_by('-id')
+
         for registered_user in registered_users:
-            days_present = Log.objects.all().filter(user=registered_user, time_in__month=month).count()
-            late_entry = Log.objects.all().filter(user=registered_user, late_join=True).count()
-            
+
+            days_present = Log.objects.all().filter(
+                user=registered_user, time_in__month=month).count()
+
+            late_entry = Log.objects.all().filter(
+                user=registered_user, time_in__month=month, late_join=True).count()
+
             user_logs.append({
                 'name': registered_user.name,
                 'dept': registered_user.department,
