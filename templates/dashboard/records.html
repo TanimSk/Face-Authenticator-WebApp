@@ -1,18 +1,22 @@
-{% extends "base.html" %} {% load static %} 
+{% extends "base.html" %} {% load static %}
 {% block head %}
-{% endblock %} 
-{% block style %} 
-.redDiv{ background-color: #fcc; } 
-.yellowDiv{ background-color: #fbfbb1; } 
+{% endblock %}
+{% block style %}
+.redDiv{
+background-color: #fcc;
+}
+.yellowDiv{
+background-color: #fbfbb1;
+}
 .fieldCont{
-    max-width: 70rem;
-    margin: 4rem auto auto auto;
-    min-height: 80vh;
+max-width: 70rem;
+margin: 1.5rem auto auto auto;
+min-height: 80vh;
 }
 .mapAttr{
-    float: left;
+float: left;
 }
-{% endblock %} 
+{% endblock %}
 {% block title %}Dashboard{% endblock title %} {% block content %}
 
 <div class="has-text-centered is-size-2 mt-5">
@@ -39,10 +43,9 @@
                 </tr>
             </thead>
             <tbody>
- 
                 {% for log in logs %}
                 <tr>
-                    <th>{{ forloop.counter }}</th>
+                    <th>{{ forloop.counter0|add:logs.start_index}}</th>
                     <td>{{ log.name }}</td>
                     <td {% if log.late_join %} class="redDiv" {% endif %}>{{ log.time_in }}</td>
                     <td>{{ log.delay_in }}</td>
@@ -53,8 +56,6 @@
                         </a>
                         {% endif %}
                     </td>
-                    
-                    
                     <td {% if not log.late_leave and not log.time_out is None %} class="yellowDiv" {% endif %}>
                         {{ log.time_out }}
                     </td>
@@ -67,12 +68,30 @@
                         {% endif %}
                     </td>
                     <td>{{ log.total_hours }}</td>
-                </tr>               
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<!-- pagination -->
+<div class="container">
+    <nav class="pagination is-centered m-5" role="navigation" aria-label="pagination">
+        <ul class="pagination-list">
+            {% for page_num in paginator_list %}
+                {% if page_num == logs.paginator.ELLIPSIS %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+                {% else %}            
+                <li><a class="pagination-link {% if logs.number == page_num %} is-current {% endif %}" href="{{page_num}}">
+                    {{page_num}}
+                </a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
+
 
 {% else %}
 <div class="fieldCont has-text-centered mt-5">

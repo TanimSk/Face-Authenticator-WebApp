@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from main.models import Log, RegisteredUser
 from .models import Holiday
 from datetime import datetime
@@ -16,9 +17,18 @@ def dashboard_today(req):
 
 
 @login_required(login_url='login')
-def dashboard_master(req):
+def dashboard_master(req, page_no=1):
     user_logs = Log.objects.all().order_by('-id')
-    return render(req, 'dashboard/records.html', {'logs': user_logs, 'heading': "Master Record"})
+    
+    paginator = Paginator(user_logs, 20)
+    data_per_page = paginator.get_page(page_no)
+    paginator_list = list(paginator.get_elided_page_range(page_no, on_each_side=1))
+
+    return render(req, 'dashboard/records.html', {
+        'logs': data_per_page,
+        'paginator_list': paginator_list,
+        'heading': "Master Record"
+    })
 
 
 @login_required(login_url='login')
