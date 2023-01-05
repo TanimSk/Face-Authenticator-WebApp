@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('dashboard/', dashboard_view.dashboard, name='dashboard'),
     path('dashboard-today/', dashboard_view.dashboard_today, name='dashboard-today'),
+    path('dashboard-today/<int:page_no>', dashboard_view.dashboard_today, name='dashboard-today'),
     path('dashboard-master/<int:page_no>', dashboard_view.dashboard_master, name='dashboard-master'),
     path('dashboard-master/', dashboard_view.dashboard_master, name='dashboard-master'),
     path('generate-report/', dashboard_view.generate_report, name='generate-report'),

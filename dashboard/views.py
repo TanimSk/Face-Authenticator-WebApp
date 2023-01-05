@@ -10,10 +10,19 @@ import json
 
 
 @login_required(login_url='login')
-def dashboard_today(req):
+def dashboard_today(req, page_no=1):
     today_date = datetime.now(timezone('Asia/Dhaka')).today()
     user_logs = Log.objects.all().filter(time_in__date=today_date).order_by('-id')
-    return render(req, 'dashboard/records.html', {'logs': user_logs, 'heading': "Today's Record"})
+    
+    paginator = Paginator(user_logs, 20)
+    data_per_page = paginator.get_page(page_no)
+    paginator_list = list(paginator.get_elided_page_range(page_no, on_each_side=1))
+#    return render(req, 'dashboard/records.html', {'logs': user_logs, 'heading': "Today's Record"})
+    return render(req, 'dashboard/records.html', {
+        'logs': data_per_page,
+        'paginator_list': paginator_list,
+        'heading': "Today's Record"
+    })
 
 
 @login_required(login_url='login')

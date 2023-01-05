@@ -24,7 +24,7 @@ def home(req):
         signed_in = False if is_signed_in == 'N' or is_signed_in is None  else True
 
     if username is None or email is None:
-        msg = '<br><br><br>' 
+        msg = '<br><br><br>'
     else:
         msg = f"Username: <b>{username}</b> <br>Email: <b>{email}</b> <br> {'Signed In' if signed_in else 'Signed out'}"
 

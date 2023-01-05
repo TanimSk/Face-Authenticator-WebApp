@@ -1,1 +1,0 @@
-web: web: gunicorn faceRecognitionApp.wsgi
