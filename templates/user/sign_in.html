@@ -62,12 +62,14 @@
         var videoBuffer = null;
         var positionInfo = '';
         var position_url = '';
+        var coords_lat = null;
+        var coords_lon = null;
         loginBtn.disabled = true;
 
         button_callback();
 
 
-        // Hide email field if found in session
+        // Hide email input field if found in session
         let emailId = "{{ email }}";
         if (emailId !== "") {
             email.value = emailId;
@@ -89,6 +91,8 @@
                             stopDrawing = false;
                             userInfo.innerHTML = "Location found!";
                             position_url = `https://www.google.com/maps/search/?api=1&query=${position.coords.latitude},${position.coords.longitude}`;
+                            coords_lat = position.coords.latitude;
+                            coords_lon = position.coords.longitude;
                         });
                 },
                 (error) => {
@@ -117,6 +121,8 @@
                     newForm.append('email', email.value);
                     newForm.append('position', positionInfo);
                     newForm.append('position_url', position_url);
+                    newForm.append('coords_lat', coords_lat);
+                    newForm.append('coords_lon', coords_lon);
 
                     fetch(
                         "{% url 'signin' %}", {

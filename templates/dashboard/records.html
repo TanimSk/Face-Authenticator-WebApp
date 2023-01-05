@@ -40,6 +40,10 @@ float: left;
                     <th>Location</th>
 
                     <th>Total Hours</th>
+                    
+                    {% if master %}
+                    <th>Approved</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -68,6 +72,10 @@ float: left;
                         {% endif %}
                     </td>
                     <td>{{ log.total_hours }}</td>
+
+                    {% if master %}
+                    <th>{% if log.approved %} ✅ {% else %} ❌ {% endif %}</th>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -80,13 +88,13 @@ float: left;
     <nav class="pagination is-centered m-5" role="navigation" aria-label="pagination">
         <ul class="pagination-list">
             {% for page_num in paginator_list %}
-                {% if page_num == logs.paginator.ELLIPSIS %}
-                <li><span class="pagination-ellipsis">&hellip;</span></li>
-                {% else %}            
-                <li><a class="pagination-link {% if logs.number == page_num %} is-current {% endif %}" href="{{page_num}}">
+            {% if page_num == logs.paginator.ELLIPSIS %}
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% else %}
+            <li><a class="pagination-link {% if logs.number == page_num %} is-current {% endif %}" href="{{page_num}}">
                     {{page_num}}
                 </a></li>
-                {% endif %}
+            {% endif %}
             {% endfor %}
         </ul>
     </nav>

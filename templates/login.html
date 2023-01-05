@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Login{% endblock title %}
-
+{% block title %}
+Login
+{% endblock title %}
 {% block style %}
 .box {
 margin-top: 5rem;
 background-color: white;
 }
-
 .avatar {
 margin-top: -70px;
 padding-bottom: 20px;
 }
-
 .avatar img {
 padding: 5px;
 background: #fff;
@@ -20,55 +19,53 @@ border-radius: 50%;
 -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
 box-shadow: 0 2px 3px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
 }
-
 .field {
 padding-bottom: 10px;
 }
-
 .centerDiv {
 margin: auto;
 }
 {% endblock %}
-
 {% block content %}
 <div class="centerDiv">
     <div class="container has-text-centered anime">
         <div class="column is-4 is-offset-4">
             <div class="box">
-
-                <div class="field">
-                    <div class="control">
-                        <input name="handle" class="input is-dark" type="text" placeholder="Your Handle" autofocus=""
-                            style="height: 3em;" id="handle">
+                <form onsubmit="post_data(event);">
+                    <div class="field">
+                        <div class="control">
+                            <input name="handle" class="input is-dark" type="text" placeholder="Your Handle"
+                                autofocus="" style="height: 3em" id="handle">
+                        </div>
                     </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <input name="password" class="input is-dark" type="password" placeholder="Your Password"
-                            style="height: 3em;" id="password">
+                    <div class="field">
+                        <div class="control">
+                            <input name="password" class="input is-dark" type="password" placeholder="Your Password"
+                                style="height: 3em" id="password">
+                        </div>
                     </div>
-                </div>
-
-                {% csrf_token %}
-
-                <button class="button is-block is-dark is-large is-fullwidth" onclick="post_data();">Login <i
-                        class="fa fa-sign-in" aria-hidden="true"></i></button>
-
+                    {% csrf_token %}
+                    <button class="button is-block is-dark is-large is-fullwidth">
+                        Login
+                        <i class="fa fa-sign-in" aria-hidden="true"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-
     <div id="msg_box" hidden>
-        <br><br>
-        <article class="message is-warning" style="width: 50%; margin: auto; min-width: 280px;">
+        <br>
+        <br>
+        <article class="message is-warning" style="width: 50%;
+                            margin: auto;
+                            min-width: 280px">
             <div class="message-header">
-                <p>Alert</p><button class="delete" aria-label="delete" onclick="delete_msg();"></button>
+                <p>Alert</p>
+                <button class="delete" aria-label="delete" onclick="delete_msg();"></button>
             </div>
             <div class="message-body" id="msg_content"></div>
         </article>
     </div>
-
 </div>
 
 
@@ -95,7 +92,9 @@ margin: auto;
         }
     }
 
-    function post_data() {
+    function post_data(event) {
+        event.preventDefault();
+
         let handle = document.getElementById('handle').value;
         let password = document.getElementById('password').value;
 
@@ -123,5 +122,4 @@ margin: auto;
     }
 
 </script>
-
 {% endblock %}

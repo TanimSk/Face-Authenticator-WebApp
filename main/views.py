@@ -1,12 +1,14 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, HttpResponse, redirect
 from .models import *
+from dashboard.models import Info
 from PIL import Image
-from . import face_recognize
-from .time_convertion import *
 from datetime import datetime
 from pytz import timezone
 import json
+
+from . import face_recognize
+from .functions import hr_to_hm, location_validator
 
 
 
@@ -43,6 +45,8 @@ def sign_in(req):
         position = req.POST.get('position')
         email = req.POST.get('email')
         position_url = req.POST.get('position_url')
+        coords_lat = req.POST.get('coords_lat')
+        coords_lon = req.POST.get('coords_lon')
 
         user = RegisteredUser.objects.filter(email=email).first()
 
@@ -63,17 +67,22 @@ def sign_in(req):
             if face_recognize.compare(target_img, new_ref_img):
                 
                 now_time = datetime.now(timezone('Asia/Dhaka'))
-                join_in = Timing.objects.get(name='main').time_in
+                join_in = Info.objects.get(name='main').time_in
                 delta_time = (datetime.combine(now_time.today(), join_in).replace(tzinfo=timezone('Asia/Dhaka')) - now_time).total_seconds()
 
                 # Delay sign in
                 delayIn = ((now_time - datetime.combine(now_time.today(), join_in).replace(tzinfo=timezone('Asia/Dhaka'))).total_seconds() / 3600)
-                delayIn_hr_min = sec_to_hm(delayIn)
+                delayIn_hr_min = hr_to_hm(delayIn)
                 delay_in = f"{delayIn_hr_min} Late" if delayIn > 0 else f"{delayIn_hr_min} Early"
                 
+                # Approval of Location
+                approved = location_validator(coords_lat, coords_lon)
+
+                # Storing to DB
                 user_log = Log(time_in=now_time, name=user.name, user=user, location_in=position, delay_in=delay_in)
                 user_log.location_in_url = position_url
                 user_log.late_join = True if delta_time < 0 else False
+                user_log.approved = approved
                 user_log.save()
 
                 # Save into Session
@@ -127,7 +136,7 @@ def sign_out(req):
                 delta_time = round((delta_time.total_seconds() / 3600), 3)
 
                 # Checking late or not
-                leave_time = Timing.objects.get(name='main').time_out
+                leave_time = Info.objects.get(name='main').time_out
                 if ((datetime.combine(signout_time.today(), leave_time).replace(tzinfo=timezone('Asia/Dhaka')) - signout_time).total_seconds() < 0):
                     user_log.late_leave = True
                 else:
@@ -135,14 +144,13 @@ def sign_out(req):
 
                 # Delay sign in
                 delayOut = ((signout_time - datetime.combine(signout_time.today(), leave_time).replace(tzinfo=timezone('Asia/Dhaka'))).total_seconds() / 3600)
-                delayOut_hr_min = sec_to_hm(delayOut)
+                delayOut_hr_min = hr_to_hm(delayOut)
                 delay_out = f"{delayOut_hr_min} Late" if delayOut > 0 else f"{delayOut_hr_min} Early"
                 user_log.delay_out = delay_out
 
-
                 # Storing user log to DB
                 user_log.time_out = signout_time
-                user_log.total_hours = sec_to_hm(delta_time)
+                user_log.total_hours = hr_to_hm(delta_time)
                 user_log.location_out = position
                 user_log.location_out_url = position_url
                 user_log.save()

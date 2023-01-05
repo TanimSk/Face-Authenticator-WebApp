@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from main.models import Log, RegisteredUser
@@ -12,31 +12,55 @@ import json
 @login_required(login_url='login')
 def dashboard_today(req, page_no=1):
     today_date = datetime.now(timezone('Asia/Dhaka')).today()
-    user_logs = Log.objects.all().filter(time_in__date=today_date).order_by('-id')
-    
+    user_logs = Log.objects.filter(
+        time_in__date=today_date, approved=True).order_by('-id')
+
     paginator = Paginator(user_logs, 20)
     data_per_page = paginator.get_page(page_no)
-    paginator_list = list(paginator.get_elided_page_range(page_no, on_each_side=1))
-#    return render(req, 'dashboard/records.html', {'logs': user_logs, 'heading': "Today's Record"})
+    paginator_list = list(
+        paginator.get_elided_page_range(page_no, on_each_side=1))
+
     return render(req, 'dashboard/records.html', {
         'logs': data_per_page,
         'paginator_list': paginator_list,
-        'heading': "Today's Record"
+        'heading': "Today's Record",
+        'master': False
     })
 
 
 @login_required(login_url='login')
 def dashboard_master(req, page_no=1):
     user_logs = Log.objects.all().order_by('-id')
-    
+
     paginator = Paginator(user_logs, 20)
     data_per_page = paginator.get_page(page_no)
-    paginator_list = list(paginator.get_elided_page_range(page_no, on_each_side=1))
+    paginator_list = list(
+        paginator.get_elided_page_range(page_no, on_each_side=1)
+    )
 
     return render(req, 'dashboard/records.html', {
         'logs': data_per_page,
         'paginator_list': paginator_list,
-        'heading': "Master Record"
+        'heading': "Master Record",
+        'master': True
+    })
+
+
+@login_required(login_url='login')
+def approval_page(req):
+
+    if req.method == 'POST':
+        log_ids = req.POST.get('emails')
+        log_ids = json.loads(log_ids)
+        Log.objects.filter(id__in=log_ids).update(approved=True)
+        return HttpResponse(json.dumps({'stat': True}))
+
+    today_date = datetime.now(timezone('Asia/Dhaka')).today()
+    user_logs = Log.objects.all().filter(time_in__date=today_date,
+                                         approved=False).order_by('-id')
+
+    return render(req, 'dashboard/approval.html', {
+        'logs': user_logs
     })
 
 
@@ -63,11 +87,13 @@ def generate_report(req, month=None):
 
         for registered_user in registered_users:
 
-            days_present = Log.objects.all().filter(
+            days_present = Log.objects.filter(
                 user=registered_user, time_in__month=month).count()
 
-            late_entry = Log.objects.all().filter(
-                user=registered_user, time_in__month=month, late_join=True).count()
+            late_entry = Log.objects.filter(
+                user=registered_user, time_in__month=month,
+                late_join=True, approved=True
+            ).count()
 
             user_logs.append({
                 'name': registered_user.name,

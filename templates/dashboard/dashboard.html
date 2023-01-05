@@ -4,7 +4,7 @@
 
 {% block style %}
 .vpositioned{
-margin-top: 20vh;
+margin-top: 18vh;
 }
 .hpositioned{
 margin: 1rem auto auto auto;
@@ -24,15 +24,18 @@ max-width: 10rem;
             Today's Record
         </a>
     </div>
-
     <br>
-
     <div class="mt-2">
         <a href="{% url 'dashboard-master' %}">
             Master Record
         </a>
     </div>
-
+    <br>
+    <div class="mt-2">
+        <a href="{% url 'dashboard-approval' %}">
+            Approval
+        </a>
+    </div>
     <br>
 
     <div class="field has-addons hpositioned">

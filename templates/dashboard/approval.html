@@ -1,0 +1,107 @@
+{% extends "base.html" %} {% load static %}
+{% block head %}
+{% endblock %}
+{% block style %}
+.fieldCont{
+max-width: 70rem;
+margin: 1.5rem auto auto auto;
+}
+
+{% endblock %}
+{% block title %}Dashboard{% endblock title %} {% block content %}
+
+<div class="has-text-centered is-size-2 mt-5">
+    Approval
+</div>
+
+{% if logs %}
+<div class="fieldCont has-text-centered">
+    <div class="table-container table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SL.</th>
+                    <th>Employee Name</th>
+                    <th>Email</th>
+                    <th>Login Time</th>
+                    <th>Login Address</th>
+                    <th>Approve</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <th>{{ forloop.counter }}</th>
+                    <td>{{ log.name }}</td>
+                    <td>{{ log.user.email }}</td>
+                    <td>{{ log.time_in }}</td>
+                    <td>
+                        {% if not log.location_in is None %}
+                        <a href="{{ log.location_in_url }}" target="_blank">
+                            {{ log.location_in }}
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <input class="approve-checkbox" type="checkbox" value="{{ log.id }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button class="button is-dark is-outlined m-3 " onclick="approve();">
+        <span>
+            <b>DONE</b>
+        </span>
+        <span class="icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </span>
+    </button>
+</div>
+
+{% csrf_token %}
+
+{% else %}
+<div class="fieldCont has-text-centered mt-5">
+    <span class="m-5 is-size-2">Empty</span>
+</div>
+{% endif %}
+
+<script>
+
+    function approve() {
+        const token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        let checkboxs = document.querySelectorAll('.approve-checkbox');
+        let log_id = [];
+        checkboxs.forEach(element => {
+            if (element.checked) {
+                log_id.push(element.value);
+            }
+        });
+
+        if (log_id.length > 0) {
+
+            let newForm = new FormData();
+            newForm.append('csrfmiddlewaretoken', token);
+            newForm.append('emails', JSON.stringify(log_id));
+
+            fetch("{% url 'dashboard-approval' %}", {
+                method: 'post',
+                body: newForm
+            }).then(
+                response => response.json()
+            ).then(
+                (data) => {
+                    if(data.stat === true) {
+                        window.location.reload();
+                    }
+                }
+            );
+        }
+    }
+
+</script>
+
+{% endblock %}

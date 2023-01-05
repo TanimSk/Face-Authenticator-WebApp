@@ -19,6 +19,7 @@ gunicorn = "==20.1.0"
 pytz = "*"
 
 [dev-packages]
+djlint = "*"
 
 [requires]
 python_version = "3.10"

@@ -1,6 +1,3 @@
-from email.policy import default
-from operator import mod
-from statistics import mode
 from django.db import models
 
 class Holiday(models.Model):
@@ -8,3 +5,10 @@ class Holiday(models.Model):
     holidays = models.IntegerField(default=0)
     def __str__(self):
         return self.month_name
+
+class Info(models.Model):
+    name = models.CharField(max_length=20, default='main')    
+    geographic_coords = models.CharField(max_length=75)
+    radius = models.IntegerField()
+    time_in = models.TimeField(null=True, blank=True)
+    time_out = models.TimeField(null=True, blank=True)
