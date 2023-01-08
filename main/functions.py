@@ -2,10 +2,11 @@ from math import radians, cos, sin, asin, sqrt
 from dashboard.models import Info
 
 
-def hr_to_hm(sec) -> str:
-    delay_hr = int(abs(sec))
-    delay_mins = int((abs(sec) - delay_hr)*60)
-    return f"{delay_hr} hr {delay_mins} mins"
+def hr_to_hm(hr) -> str:
+    print(hr)
+    delay_hr = int(abs(hr))
+    delay_mins = (abs(hr) - delay_hr)*60
+    return f"{delay_hr} hr {int(delay_mins)} mins"
 
 
 def location_validator(lat1, lon1) -> bool:

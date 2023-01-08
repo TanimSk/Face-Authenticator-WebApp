@@ -88,7 +88,9 @@ def generate_report(req, month=None):
         for registered_user in registered_users:
 
             days_present = Log.objects.filter(
-                user=registered_user, time_in__month=month).count()
+                user=registered_user, time_in__month=month,
+                approved=True
+            ).count()
 
             late_entry = Log.objects.filter(
                 user=registered_user, time_in__month=month,
