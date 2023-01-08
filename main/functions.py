@@ -42,7 +42,7 @@ def _distance(lat1, lon1, lat2, lon2):
     c = 2 * asin(sqrt(a))
 
     # Radius of earth in kilometers. Use 3956 for miles
-    r = 6371
+    r = 6371000
 
     # calculate the result
     return (c * r)
